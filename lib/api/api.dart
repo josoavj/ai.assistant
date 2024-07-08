@@ -1,5 +1,8 @@
+
+import 'package:ai_test/pages/about.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
@@ -42,13 +45,75 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              child: Text('Menu', 
+                style: GoogleFonts.poppins(
+                  fontSize: 15,
+                  color: Colors.white,fontWeight: FontWeight.w700
+                ),),
+            ),
+            ListTile(
+              title: const Text('A propos'),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const About()));
+              },
+            ),
+            ListTile(
+              title: const Text('Paramètres'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('Quitter'),
+              onTap: () {
+                 showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title:  Text(
+                      "Quitter l'application",
+                      style: GoogleFonts.poppins(fontSize: 15),),
+                    content:  Text(
+                      "Vous êtes sur le point de quitter l'application. \n voulez vous continuer ?", 
+                       style: GoogleFonts.poppins(fontSize: 11),),
+                    actions: [
+                      TextButton(
+                        child: const Text("Annuler"),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      TextButton(
+                        child: const Text("Quitter"),
+                        onPressed: () {
+                          SystemNavigator.pop();
+                        },
+                      ),
+                    ],
+                  );
+                  }
+                  );
+              },
+            ),
+          ],
+        ),
+      
+      ),
       appBar: AppBar(
         title: Text(widget.title, 
-        style: GoogleFonts.poppins(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),),
+        style: GoogleFonts.poppins(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),),
       centerTitle: true,
       actions: [
         IconButton(
-          iconSize: 15,
+          iconSize: 20,
           onPressed: () {
             setState(() {
             });
