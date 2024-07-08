@@ -1,5 +1,6 @@
 
 import 'package:ai_test/pages/about.dart';
+import 'package:ai_test/pages/settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -72,7 +73,7 @@ class _ChatScreenState extends State<ChatScreen> {
               iconColor: Colors.white,
               title: const Text('Paramètres'),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const Settings()));
               },
             ),
             ListTile(
@@ -188,6 +189,12 @@ class ApiKeyWidget extends StatelessWidget {
                     decoration:
                       textFieldDecoration(context, 'Entrer votre clé d''API'),
                       controller: _textController,
+                      // Condition : Feature
+                      /**
+                       * Condition pour vérifier si le champ est vide
+                       * Si le champ est vide alors un alerte est envoyé 
+                       * à l'utilisateur pour lui demander de remplir le champ
+                       */
                       onSubmitted: (value) {
                         onSubmitted(value);
                       },

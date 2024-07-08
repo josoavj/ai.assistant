@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/link.dart';
 
 class About extends StatefulWidget {
   const About({super.key});
@@ -14,7 +16,10 @@ class _AboutState extends State<About> {
     return Scaffold(
       //floatingActionButton: ,
       appBar: AppBar(
-        title: Text("About the app", 
+        leading: IconButton(
+          icon: const Icon(CupertinoIcons.back),
+          onPressed: () => Navigator.pop(context),),
+        title: Text("Informations", 
         style: GoogleFonts.poppins(
           fontSize: 15,
           color: Colors.white,
@@ -24,9 +29,10 @@ class _AboutState extends State<About> {
       ),
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "Generative Application", 
+              "AI ChatBot Application", 
               style: GoogleFonts.poppins(
                 fontSize: 20,
                 color: Colors.white,
@@ -40,7 +46,65 @@ class _AboutState extends State<About> {
                 color: Colors.white,
                 fontWeight: FontWeight.w700,
               ),
-            )
+            ),
+        
+            // About the developer
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+              "Developped by:",
+              style: GoogleFonts.poppins(
+                fontSize: 15,
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            Link(
+                uri: Uri.https('github.com', '/Josoa886'),
+                target: LinkTarget.blank,
+                builder: (context, followLink) => TextButton(
+                  onPressed: followLink,
+                  child:  AbsorbPointer(
+                    child: Text('Josoa886', 
+                      style: GoogleFonts.poppins(
+                        fontSize: 15,
+                        color: Colors.white,fontWeight: FontWeight.w700
+                      ),),
+                  ),
+                ),
+              ),
+              ],
+            ),
+        
+            // The repository
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+              "GitHub Repo:",
+              style: GoogleFonts.poppins(
+                fontSize: 15,
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            Link(
+                uri: Uri.https('github.com', '/Josoa886/ai_test'),
+                target: LinkTarget.blank,
+                builder: (context, followLink) => TextButton(
+                  onPressed: followLink,
+                  child:  AbsorbPointer(
+                    child: Text('AI Test', 
+                      style: GoogleFonts.poppins(
+                        fontSize: 15,
+                        color: Colors.white,fontWeight: FontWeight.w700
+                      ),),
+                  ),
+                ),
+              ),
+              ],
+            ),
           ],),
       ),
     );
