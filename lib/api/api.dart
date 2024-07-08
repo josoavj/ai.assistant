@@ -50,28 +50,34 @@ class _ChatScreenState extends State<ChatScreen> {
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 7, 116, 206),
               ),
-              child: Text('Menu', 
+              child: Text('MyAI Menu', 
                 style: GoogleFonts.poppins(
-                  fontSize: 15,
+                  fontSize: 25,
                   color: Colors.white,fontWeight: FontWeight.w700
                 ),),
             ),
             ListTile(
+              leading: const Icon(CupertinoIcons.info),
+              iconColor: Colors.white,
               title: const Text('A propos'),
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const About()));
               },
             ),
             ListTile(
+              leading: const Icon(CupertinoIcons.settings_solid),
+              iconColor: Colors.white,
               title: const Text('Paramètres'),
               onTap: () {
                 Navigator.pop(context);
               },
             ),
             ListTile(
+              leading: const Icon(Icons.exit_to_app),
+              iconColor: Colors.white,
               title: const Text('Quitter'),
               onTap: () {
                  showDialog(
