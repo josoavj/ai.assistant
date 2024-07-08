@@ -22,6 +22,27 @@ class _AboutState extends State<About> {
         ),),
         centerTitle: true
       ),
+      body: Center(
+        child: Column(
+          children: [
+            Text(
+              "Generative Application", 
+              style: GoogleFonts.poppins(
+                fontSize: 20,
+                color: Colors.white,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            Text(
+              "Version 1.0.0",
+              style: GoogleFonts.poppins(
+                fontSize: 15,
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+              ),
+            )
+          ],),
+      ),
     );
   }
 }
