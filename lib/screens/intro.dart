@@ -26,6 +26,16 @@ class _IntroState extends State<Intro> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const SizedBox(
+              width: 150,
+              child: CircleAvatar(
+                radius: 80,
+                foregroundImage: AssetImage(
+                  "assets/images/todoroki.png",
+                ),
+                ),
+            ),
+            const SizedBox(height: 50,),
             Text('Welcome to',
             style: GoogleFonts.poppins(
               fontSize: 20,

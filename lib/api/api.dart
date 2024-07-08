@@ -167,11 +167,13 @@ class ApiKeyWidget extends StatelessWidget {
                 target: LinkTarget.blank,
                 builder: (context, followLink) => TextButton(
                   onPressed: followLink,
-                  child:  Text('Obtenir un clé API', 
-                    style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      color: Colors.white,fontWeight: FontWeight.w700
-                    ),),
+                  child:  AbsorbPointer(
+                    child: Text('Obtenir un clé API', 
+                      style: GoogleFonts.poppins(
+                        fontSize: 15,
+                        color: Colors.white,fontWeight: FontWeight.w700
+                      ),),
+                  ),
                 ),
               ),
               const SizedBox(height: 10),
@@ -196,11 +198,13 @@ class ApiKeyWidget extends StatelessWidget {
                     onPressed: () {
                       onSubmitted(_textController.value.text);
                     },
-                    child: Text('Connecter', 
-                      style: GoogleFonts.poppins(
-                        fontSize: 15,
-                        color: Colors.white,fontWeight: FontWeight.w800
-                      ),)
+                    child: AbsorbPointer(
+                      child: Text('Connecter', 
+                        style: GoogleFonts.poppins(
+                          fontSize: 15,
+                          color: Colors.white,fontWeight: FontWeight.w800
+                        ),),
+                    )
                   ),
                 ],
               ),
