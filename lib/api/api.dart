@@ -153,12 +153,20 @@ class ChatWidget extends StatefulWidget {
 }
 
 class _ChatWidgetState extends State<ChatWidget> {
+
   late final GenerativeModel _model;
   late final ChatSession _chat;
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _textController = TextEditingController();
   final FocusNode _textFieldFocus = FocusNode(debugLabel: 'TextField');
   bool _loading = false;
+
+  // Security 
+  final safetySettings = [
+  SafetySetting(HarmCategory.harassment, HarmBlockThreshold.low),
+  SafetySetting(HarmCategory.hateSpeech, HarmBlockThreshold.low),
+];
+
   @override
   void initState() {
     super.initState();
