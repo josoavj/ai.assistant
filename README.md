@@ -1,8 +1,14 @@
-# ai_test
+# About
 
-A new Flutter project.
+- **Description:** AI chat application using gemini's API for AI integration 
+- **Techno:** Flutter (Dart)
 
-## Getting Started
+## Contributors
+
+- **[Josoa886](https://github.com/Josoa886)**
+
+
+### Getting Started
 
 This project is a starting point for a Flutter application.
 
