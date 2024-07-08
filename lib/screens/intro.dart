@@ -21,7 +21,7 @@ class _IntroState extends State<Intro> {
       body: Container(
         alignment: Alignment.center,
         decoration: const BoxDecoration(
-          color: Color.fromARGB(255, 8, 85, 148),
+          color: Color.fromARGB(255, 7, 116, 206),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
