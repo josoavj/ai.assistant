@@ -24,6 +24,8 @@ class MyAI extends StatelessWidget {
     );
   }
 }
+
+// Chat Screen 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key, required this.title});
 
@@ -33,6 +35,7 @@ class ChatScreen extends StatefulWidget {
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
+// Chat Screen state management
 class _ChatScreenState extends State<ChatScreen> {
   String? apiKey;
 
@@ -63,6 +66,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 }
 
+// API Key Injection & Usage
 class ApiKeyWidget extends StatelessWidget {
   ApiKeyWidget({required this.onSubmitted, super.key});
 
@@ -137,6 +141,8 @@ class ApiKeyWidget extends StatelessWidget {
   }
 }
 
+
+// Chat Widget (Chat screen)
 class ChatWidget extends StatefulWidget {
   const ChatWidget({required this.apiKey, super.key});
 
