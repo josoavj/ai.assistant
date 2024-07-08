@@ -72,63 +72,65 @@ class ApiKeyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-             Text(
-              "Pour utiliser votre IA,"
-              "vous devez obtenir une clé API",
-              style: GoogleFonts.poppins(
-                fontSize: 13,
-                color: Colors.white,fontWeight: FontWeight.w700
-              )
-            ),
-            const SizedBox(height: 8),
-            Link(
-              uri: Uri.https('makersuite.google.com', '/app/apikey'),
-              target: LinkTarget.blank,
-              builder: (context, followLink) => TextButton(
-                onPressed: followLink,
-                child:  Text('Obtenir un clé API', 
-                  style: GoogleFonts.poppins(
-                    fontSize: 15,
-                    color: Colors.white,fontWeight: FontWeight.w700
-                  ),),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+               Text(
+                "Pour utiliser votre IA,"
+                "vous devez obtenir une clé API",
+                style: GoogleFonts.poppins(
+                  fontSize: 13,
+                  color: Colors.white,fontWeight: FontWeight.w700
+                )
               ),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                  style: GoogleFonts.poppins(
-                         fontSize: 12,
-                         color: Colors.white, 
-                         fontWeight: FontWeight.w400),
-                  decoration:
-                    textFieldDecoration(context, 'Entrer votre clé d''API'),
-                    controller: _textController,
-                    onSubmitted: (value) {
-                      onSubmitted(value);
-                    },
-                  ),
-                ),
-                const SizedBox(height: 5),
-                TextButton(
-                  onPressed: () {
-                    onSubmitted(_textController.value.text);
-                  },
-                  child: Text('Connecter', 
+              const SizedBox(height: 8),
+              Link(
+                uri: Uri.https('makersuite.google.com', '/app/apikey'),
+                target: LinkTarget.blank,
+                builder: (context, followLink) => TextButton(
+                  onPressed: followLink,
+                  child:  Text('Obtenir un clé API', 
                     style: GoogleFonts.poppins(
                       fontSize: 15,
-                      color: Colors.white,fontWeight: FontWeight.w800
-                    ),)
+                      color: Colors.white,fontWeight: FontWeight.w700
+                    ),),
                 ),
-              ],
-            ),
-          ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                    style: GoogleFonts.poppins(
+                           fontSize: 12,
+                           color: Colors.white, 
+                           fontWeight: FontWeight.w400),
+                    decoration:
+                      textFieldDecoration(context, 'Entrer votre clé d''API'),
+                      controller: _textController,
+                      onSubmitted: (value) {
+                        onSubmitted(value);
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  TextButton(
+                    onPressed: () {
+                      onSubmitted(_textController.value.text);
+                    },
+                    child: Text('Connecter', 
+                      style: GoogleFonts.poppins(
+                        fontSize: 15,
+                        color: Colors.white,fontWeight: FontWeight.w800
+                      ),)
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
