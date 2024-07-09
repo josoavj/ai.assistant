@@ -98,6 +98,14 @@ class _AboutState extends State<About> {
               ],
             ),
             TextButton(
+              child: Text(
+                  "Adnanced Informations",
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                  ),
+              ),
               onPressed: (){
                 showAboutDialog(
                   context: context,
@@ -123,14 +131,7 @@ class _AboutState extends State<About> {
                   ]
                   );
               }, 
-              child: Text(
-                  "About the app",
-                  style: GoogleFonts.poppins(
-                    fontSize: 15,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                  ),
-            ) ),
+              ),
           ],),
       ),
     );
