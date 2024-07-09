@@ -1,5 +1,7 @@
+import 'package:ai_test/api/api.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Profile extends StatefulWidget {
@@ -24,10 +26,48 @@ class _ProfileState extends State<Profile> {
             fontWeight: FontWeight.w700
           ),),
         centerTitle: true,
-
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.door_back_door_rounded),
+            onPressed: () {
+               showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title:  Text(
+                      "Déconnecter",
+                      style: GoogleFonts.poppins(fontSize: 15),),
+                    content:  Text(
+                      "Vous êtes sur de déconnecter votre compte?", 
+                       style: GoogleFonts.poppins(fontSize: 11),),
+                    actions: [
+                      TextButton(
+                        child: const Text("Non"),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      TextButton(
+                        child: const Text("Oui"),
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const MyAI()));
+                      },),]);
+            });})
+        ],
       ),
       body: Container(
-        
+        alignment: Alignment.center,
+        child: Column(
+          children: [
+            Text(
+              "Nom: ",
+              style: GoogleFonts.poppins(
+                fontSize: 20,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
