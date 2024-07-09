@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Settings extends StatelessWidget {
@@ -22,6 +23,12 @@ class Settings extends StatelessWidget {
           ),
         ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () => SystemNavigator.pop(),
+            icon: const Icon(Icons.exit_to_app_rounded),
+          ),
+        ],
       ),
     );
   }
