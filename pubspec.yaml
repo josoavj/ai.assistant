@@ -40,6 +40,7 @@ dependencies:
   url_launcher: ^6.3.0
   google_fonts: ^6.2.1
   firebase_core: ^3.1.1
+  font_awesome_flutter: ^10.7.0
 
 dev_dependencies:
   flutter_test:
