@@ -1,5 +1,6 @@
 
 import 'package:ai_test/pages/about.dart';
+import 'package:ai_test/pages/profile.dart';
 import 'package:ai_test/pages/settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -122,8 +123,7 @@ class _ChatScreenState extends State<ChatScreen> {
         IconButton(
           iconSize: 20,
           onPressed: () {
-            setState(() {
-            });
+             Navigator.push(context, MaterialPageRoute(builder: (context) => const Profile()));
           },
           icon: const Icon(CupertinoIcons.profile_circled),
         ),],

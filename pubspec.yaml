@@ -39,6 +39,7 @@ dependencies:
   google_generative_ai: ^0.4.3
   url_launcher: ^6.3.0
   google_fonts: ^6.2.1
+  firebase_core: ^3.1.1
 
 dev_dependencies:
   flutter_test:
