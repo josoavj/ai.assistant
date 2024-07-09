@@ -39,15 +39,7 @@ class _AboutState extends State<About> {
                 fontWeight: FontWeight.w900,
               ),
             ),
-            Text(
-              "Version 1.0.0",
-              style: GoogleFonts.poppins(
-                fontSize: 15,
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-        
+            const SizedBox(height: 20,),
             // About the developer
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -105,6 +97,40 @@ class _AboutState extends State<About> {
               ),
               ],
             ),
+            TextButton(
+              onPressed: (){
+                showAboutDialog(
+                  context: context,
+                  applicationLegalese: "© 2024 Josoa Vonjiniaina",
+                  applicationName: "AI ChatBot",
+                  applicationVersion: "1.0.0",
+                  applicationIcon: const FlutterLogo(size: 30),
+                  children: [
+                    const SizedBox(height: 20,),
+                    Text(
+                      "This is a simple AI ChatBot application \n developed by Josoa Vonjiniaina.",
+                      style:GoogleFonts.poppins(
+                        fontSize: 9,
+                      )),
+                    Text(
+                      "This application is open source and \n can be found on GitHub.",
+                      style: GoogleFonts.poppins(
+                        fontSize: 9),),
+                    Text(
+                      "This application is developed using Flutter and Dart.",
+                      style: GoogleFonts.poppins(
+                        fontSize: 8),),
+                  ]
+                  );
+              }, 
+              child: Text(
+                  "About the app",
+                  style: GoogleFonts.poppins(
+                    fontSize: 15,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                  ),
+            ) ),
           ],),
       ),
     );
