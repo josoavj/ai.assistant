@@ -54,20 +54,42 @@ class _ProfileState extends State<Profile> {
             });})
         ],
       ),
-      body: Container(
-        alignment: Alignment.center,
-        child: Column(
-          children: [
-            Text(
-              "Nom: ",
-              style: GoogleFonts.poppins(
-                fontSize: 20,
-                fontWeight: FontWeight.w900,
-              ),
+      body: Center(
+        child: Card(
+          elevation: 20,
+        color: const Color.fromARGB(129, 4, 58, 102),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: SizedBox(
+            width: 300,
+            height: 350,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      "Username:",
+                      style: GoogleFonts.poppins(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                      )),
+                    Text(
+                      "sudoted",
+                      style: GoogleFonts.poppins(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500
+                      ),
+                    )
+                  ],
+                ),
+              ],
             ),
-          ],
+          ),
+          ),
         ),
-      ),
+      )
     );
   }
 }

@@ -28,111 +28,124 @@ class _AboutState extends State<About> {
         centerTitle: true
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "AI ChatBot Application", 
-              style: GoogleFonts.poppins(
-                fontSize: 20,
-                color: Colors.white,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-            const SizedBox(height: 20,),
-            // About the developer
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-              "Developped by:",
-              style: GoogleFonts.poppins(
-                fontSize: 15,
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            Link(
-                uri: Uri.https('github.com', '/Josoa886'),
-                target: LinkTarget.blank,
-                builder: (context, followLink) => TextButton(
-                  onPressed: followLink,
-                  child:  AbsorbPointer(
-                    child: Text('Josoa886', 
-                      style: GoogleFonts.poppins(
-                        fontSize: 15,
-                        color: Colors.white,fontWeight: FontWeight.w700
-                      ),),
+        child: Card(
+          color: const Color.fromARGB(178, 4, 66, 117),
+          elevation: 20,
+          child: Padding(
+            padding: const EdgeInsets.all(30),
+            child: SizedBox(
+              width: 250,
+              height: 200,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "AI ChatBot Application", 
+                    style: GoogleFonts.poppins(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w900,
+                    ),
                   ),
-                ),
-              ),
-              ],
-            ),
-        
-            // The repository
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-              "GitHub Repo:",
-              style: GoogleFonts.poppins(
-                fontSize: 15,
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            Link(
-                uri: Uri.https('github.com', '/Josoa886/ai_test'),
-                target: LinkTarget.blank,
-                builder: (context, followLink) => TextButton(
-                  onPressed: followLink,
-                  child:  AbsorbPointer(
-                    child: Text('AI Test', 
-                      style: GoogleFonts.poppins(
-                        fontSize: 15,
-                        color: Colors.white,fontWeight: FontWeight.w700
-                      ),),
+                  const SizedBox(height: 20,),
+                  // About the developer
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                    "Developped by:",
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
-                ),
-              ),
-              ],
-            ),
-            TextButton(
-              child: Text(
-                  "Adnanced Informations",
-                  style: GoogleFonts.poppins(
-                    fontSize: 12,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
+                  Link(
+                      uri: Uri.https('github.com', '/Josoa886'),
+                      target: LinkTarget.blank,
+                      builder: (context, followLink) => TextButton(
+                        onPressed: followLink,
+                        child:  AbsorbPointer(
+                          child: Text('Josoa886', 
+                            style: GoogleFonts.poppins(
+                              fontSize: 15,
+                              color: Colors.white,fontWeight: FontWeight.w700
+                            ),),
+                        ),
+                      ),
+                    ),
+                    ],
                   ),
-              ),
-              onPressed: (){
-                showAboutDialog(
-                  context: context,
-                  applicationLegalese: "© 2024 Josoa Vonjiniaina",
-                  applicationName: "AI ChatBot",
-                  applicationVersion: "1.0.0",
-                  applicationIcon: const FlutterLogo(size: 30),
-                  children: [
-                    const SizedBox(height: 20,),
-                    Text(
-                      "This is a simple AI ChatBot application \n developed by Josoa Vonjiniaina.",
-                      style:GoogleFonts.poppins(
-                        fontSize: 9,
-                      )),
-                    Text(
-                      "This application is open source and \n can be found on GitHub.",
-                      style: GoogleFonts.poppins(
-                        fontSize: 9),),
-                    Text(
-                      "This application is developed using Flutter and Dart.",
-                      style: GoogleFonts.poppins(
-                        fontSize: 8),),
-                  ]
-                  );
-              }, 
-              ),
-          ],),
+              
+                  // The repository
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                    "GitHub Repo:",
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  Link(
+                      uri: Uri.https('github.com', '/Josoa886/ai_test'),
+                      target: LinkTarget.blank,
+                      builder: (context, followLink) => TextButton(
+                        onPressed: followLink,
+                        child:  AbsorbPointer(
+                          child: Text('AI Test', 
+                            style: GoogleFonts.poppins(
+                              fontSize: 15,
+                              color: Colors.white,fontWeight: FontWeight.w700
+                            ),),
+                        ),
+                      ),
+                    ),
+                    ],
+                  ),
+                  TextButton(
+                    child: Text(
+                        "Advanced Informations",
+                        style: GoogleFonts.poppins(
+                          fontSize: 12,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                        ),
+                    ),
+                    onPressed: (){
+                      showAboutDialog(
+                        context: context,
+                        applicationLegalese: "© 2024 Josoa Vonjiniaina",
+                        applicationName: "AI ChatBot",
+                        applicationVersion: "1.0.0",
+                        applicationIcon: const FlutterLogo(size: 30),
+                        children: [
+                          const SizedBox(height: 20,),
+                          Text(
+                            "This is a simple AI ChatBot application \n developed by Josoa Vonjiniaina.",
+                            style:GoogleFonts.poppins(
+                              fontSize: 9,
+                            )),
+                          Text(
+                            "This application is open source and \n can be found on GitHub.",
+                            style: GoogleFonts.poppins(
+                              fontSize: 9),),
+                          Text(
+                            "This application is developed using Flutter and Dart.",
+                            style: GoogleFonts.poppins(
+                              fontSize: 8),),
+                        ]
+                        );
+                    }, 
+                    ),
+                ],),
+            ),
+          ),
+        ),
       ),
     );
   }
