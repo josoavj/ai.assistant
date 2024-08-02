@@ -64,12 +64,12 @@ class _AboutState extends State<About> {
                     ),
                   ),
                   Link(
-                      uri: Uri.https('github.com', '/Josoa886'),
+                      uri: Uri.https('github.com', '/josoavj'),
                       target: LinkTarget.blank,
                       builder: (context, followLink) => TextButton(
                         onPressed: followLink,
                         child:  AbsorbPointer(
-                          child: Text('Josoa886', 
+                          child: Text('josoavj', 
                             style: GoogleFonts.poppins(
                               fontSize: 15,
                               color: Colors.white,fontWeight: FontWeight.w700
@@ -93,7 +93,7 @@ class _AboutState extends State<About> {
                     ),
                   ),
                   Link(
-                      uri: Uri.https('github.com', '/Josoa886/ai_test'),
+                      uri: Uri.https('github.com', '/josoavj/ai.assistant'),
                       target: LinkTarget.blank,
                       builder: (context, followLink) => TextButton(
                         onPressed: followLink,
