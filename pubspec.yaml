@@ -41,6 +41,8 @@ dependencies:
   google_fonts: ^6.2.1
   firebase_core: ^3.1.1
   font_awesome_flutter: ^10.7.0
+  shared_preferences: ^2.5.3
+  flutter_colorpicker: ^1.1.0
 
 dev_dependencies:
   flutter_test:
