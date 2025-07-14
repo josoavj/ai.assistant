@@ -1,7 +1,7 @@
-import 'package:ai_test/others/app_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../data/users.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -11,11 +11,34 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  bool _notificationsEnabled = true;
-  bool _darkModeEnabled = false;
+  User? currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialiser le gestionnaire d'utilisateurs et récupérer l'utilisateur actuel
+    UserManager.initialize();
+    currentUser = UserManager.currentUser;
+  }
 
   @override
   Widget build(BuildContext context) {
+    // Si aucun utilisateur n'est connecté, afficher un message
+    if (currentUser == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(
+            "Mon compte",
+            style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w700),
+          ),
+          centerTitle: true,
+        ),
+        body: const Center(
+          child: Text("Aucun utilisateur connecté"),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -57,6 +80,10 @@ class _ProfileState extends State<Profile> {
 
             // Section Actions
             _buildActionsSection(context),
+
+            // Section pour changer d'utilisateur (pour tester)
+            const SizedBox(height: 24),
+            _buildUserSwitchSection(),
           ],
         ),
       ),
@@ -76,11 +103,19 @@ class _ProfileState extends State<Profile> {
                 CircleAvatar(
                   radius: 50,
                   backgroundColor: Colors.grey[300],
-                  child: Icon(
-                    CupertinoIcons.person_fill,
-                    size: 50,
-                    color: Colors.grey[600],
-                  ),
+                  backgroundImage: currentUser!.profileImageUrl.isNotEmpty
+                      ? NetworkImage(currentUser!.profileImageUrl)
+                      : null,
+                  child: currentUser!.profileImageUrl.isEmpty
+                      ? Text(
+                    currentUser!.firstName[0] + currentUser!.lastName[0],
+                    style: GoogleFonts.poppins(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[600],
+                    ),
+                  )
+                      : null,
                 ),
                 Positioned(
                   bottom: 0,
@@ -94,7 +129,7 @@ class _ProfileState extends State<Profile> {
                       icon: const Icon(CupertinoIcons.camera_fill,
                           color: Colors.white, size: 16),
                       onPressed: () {
-                        // Logique pour changer la photo de profil
+                        _showImagePickerOptions();
                       },
                     ),
                   ),
@@ -103,7 +138,7 @@ class _ProfileState extends State<Profile> {
             ),
             const SizedBox(height: 16),
             Text(
-              "sudoted",
+              currentUser!.fullName,
               style: GoogleFonts.poppins(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
@@ -111,13 +146,47 @@ class _ProfileState extends State<Profile> {
             ),
             const SizedBox(height: 4),
             Text(
-              "En ligne",
+              "@${currentUser!.username}",
               style: GoogleFonts.poppins(
                 fontSize: 14,
-                color: Colors.green,
+                color: Colors.grey[600],
                 fontWeight: FontWeight.w500,
               ),
             ),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: currentUser!.isOnline ? Colors.green : Colors.grey,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  currentUser!.isOnline ? "En ligne" : "Hors ligne",
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    color: currentUser!.isOnline ? Colors.green : Colors.grey,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+            if (currentUser!.bio.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Text(
+                currentUser!.bio,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  fontSize: 13,
+                  color: Colors.grey[600],
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -141,13 +210,13 @@ class _ProfileState extends State<Profile> {
               ),
             ),
             const SizedBox(height: 16),
-            _buildInfoRow("Email", "sudoted@example.com", CupertinoIcons.mail_solid),
+            _buildInfoRow("Email", currentUser!.email, CupertinoIcons.mail_solid),
             const SizedBox(height: 12),
-            _buildInfoRow("Téléphone", "+261 34 12 345 67", CupertinoIcons.phone_fill),
+            _buildInfoRow("Téléphone", currentUser!.phone, CupertinoIcons.phone_fill),
             const SizedBox(height: 12),
-            _buildInfoRow("Localisation", "Antananarivo, Madagascar", CupertinoIcons.location_solid),
+            _buildInfoRow("Localisation", currentUser!.location, CupertinoIcons.location_solid),
             const SizedBox(height: 12),
-            _buildInfoRow("Membre depuis", "Janvier 2024", CupertinoIcons.calendar),
+            _buildInfoRow("Membre depuis", currentUser!.formattedMemberSince, CupertinoIcons.calendar),
           ],
         ),
       ),
@@ -185,7 +254,7 @@ class _ProfileState extends State<Profile> {
         IconButton(
           icon: const Icon(CupertinoIcons.pencil, size: 16),
           onPressed: () {
-            // Logique pour modifier les informations
+            _showEditDialog(label, value);
           },
         ),
       ],
@@ -213,10 +282,11 @@ class _ProfileState extends State<Profile> {
               "Notifications",
               CupertinoIcons.bell_fill,
               Switch(
-                value: _notificationsEnabled,
+                value: currentUser!.notificationsEnabled,
                 onChanged: (value) {
+                  UserManager.updateNotificationSettings(value);
                   setState(() {
-                    _notificationsEnabled = value;
+                    currentUser = UserManager.currentUser;
                   });
                 },
               ),
@@ -226,10 +296,25 @@ class _ProfileState extends State<Profile> {
               "Mode sombre",
               CupertinoIcons.moon_fill,
               Switch(
-                value: _darkModeEnabled,
+                value: currentUser!.darkModeEnabled,
                 onChanged: (value) {
+                  UserManager.updateDarkModeSettings(value);
                   setState(() {
-                    _darkModeEnabled = value;
+                    currentUser = UserManager.currentUser;
+                  });
+                },
+              ),
+            ),
+            const SizedBox(height: 12),
+            _buildSettingRow(
+              "Statut en ligne",
+              CupertinoIcons.circle_fill,
+              Switch(
+                value: currentUser!.isOnline,
+                onChanged: (value) {
+                  UserManager.toggleOnlineStatus();
+                  setState(() {
+                    currentUser = UserManager.currentUser;
                   });
                 },
               ),
@@ -277,19 +362,25 @@ class _ProfileState extends State<Profile> {
             ),
             const SizedBox(height: 16),
             _buildActionRow("Changer le mot de passe", CupertinoIcons.lock_fill, () {
-              // Logique pour changer le mot de passe
+              _showChangePasswordDialog();
             }),
             const SizedBox(height: 12),
             _buildActionRow("Historique des activités", CupertinoIcons.time, () {
-              // Logique pour voir l'historique
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Fonctionnalité en développement"))
+              );
             }),
             const SizedBox(height: 12),
             _buildActionRow("Aide et support", CupertinoIcons.question_circle_fill, () {
-              // Logique pour l'aide
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Contactez-nous à support@example.com"))
+              );
             }),
             const SizedBox(height: 12),
             _buildActionRow("Politique de confidentialité", CupertinoIcons.doc_text_fill, () {
-              // Logique pour la politique de confidentialité
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Politique de confidentialité"))
+              );
             }),
             const SizedBox(height: 12),
             _buildActionRow("Supprimer le compte", CupertinoIcons.delete_solid, () {
@@ -336,6 +427,82 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  // Section pour changer d'utilisateur (pour tester)
+  Widget _buildUserSwitchSection() {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Changer d'utilisateur (Test)",
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 16),
+            ...UserManager.allUsers.map((user) =>
+                InkWell(
+                  onTap: () {
+                    UserManager.setCurrentUser(user.id);
+                    setState(() {
+                      currentUser = UserManager.currentUser;
+                    });
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: currentUser!.id == user.id ? Colors.blue.withOpacity(0.1) : null,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 16,
+                          child: Text(
+                            user.firstName[0] + user.lastName[0],
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                user.fullName,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              Text(
+                                "@${user.username}",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 12,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (currentUser!.id == user.id)
+                          const Icon(Icons.check_circle, color: Colors.blue, size: 20),
+                      ],
+                    ),
+                  ),
+                ),
+            ).toList(),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -367,8 +534,9 @@ class _ProfileState extends State<Profile> {
               ),
               onPressed: () {
                 Navigator.of(context).pop();
-                // Remplacez MyAI() par votre page de connexion
-                // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MyAI()));
+                UserManager.logout();
+                // Remplacez par votre page de connexion
+                // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginPage()));
               },
             ),
           ],
@@ -409,6 +577,165 @@ class _ProfileState extends State<Profile> {
               onPressed: () {
                 Navigator.of(context).pop();
                 // Logique pour supprimer le compte
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Compte supprimé"))
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showEditDialog(String field, String currentValue) {
+    final controller = TextEditingController(text: currentValue);
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Text(
+            "Modifier $field",
+            style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+          content: TextField(
+            controller: controller,
+            decoration: InputDecoration(
+              labelText: field,
+              border: const OutlineInputBorder(),
+            ),
+          ),
+          actions: [
+            TextButton(
+              child: Text(
+                "Annuler",
+                style: GoogleFonts.poppins(fontSize: 14),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text(
+                "Sauvegarder",
+                style: GoogleFonts.poppins(fontSize: 14, color: Colors.blue),
+              ),
+              onPressed: () {
+                // Ici vous pouvez ajouter la logique pour sauvegarder les modifications
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("$field modifié avec succès"))
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showImagePickerOptions() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "Changer la photo de profil",
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 20),
+              ListTile(
+                leading: const Icon(CupertinoIcons.camera_fill),
+                title: const Text("Prendre une photo"),
+                onTap: () {
+                  Navigator.pop(context);
+                  // Logique pour prendre une photo
+                },
+              ),
+              ListTile(
+                leading: const Icon(CupertinoIcons.photo_fill),
+                title: const Text("Choisir depuis la galerie"),
+                onTap: () {
+                  Navigator.pop(context);
+                  // Logique pour choisir depuis la galerie
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showChangePasswordDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Text(
+            "Changer le mot de passe",
+            style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: "Mot de passe actuel",
+                  border: const OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: "Nouveau mot de passe",
+                  border: const OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: "Confirmer le nouveau mot de passe",
+                  border: const OutlineInputBorder(),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              child: Text(
+                "Annuler",
+                style: GoogleFonts.poppins(fontSize: 14),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text(
+                "Changer",
+                style: GoogleFonts.poppins(fontSize: 14, color: Colors.blue),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Mot de passe modifié avec succès"))
+                );
               },
             ),
           ],
