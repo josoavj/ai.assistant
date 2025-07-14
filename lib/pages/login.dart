@@ -1,8 +1,10 @@
-import 'package:ai_test/models/user.dart';
-import 'package:ai_test/screens/profile.dart'; // Ajustez le chemin selon votre structure
+import 'package:ai_test/others/app_theme.dart';
+import 'package:ai_test/pages/profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../data/users.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -487,7 +489,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         // Naviguer vers la page de profil
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const Profile()),
+          MaterialPageRoute(builder: (context) => const MyAI()),
         );
       } else {
         // Afficher une erreur
