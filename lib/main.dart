@@ -1,3 +1,4 @@
+import 'package:ai_test/screens/intro.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,7 +27,6 @@ class _MyAppState extends State<MyApp> {
 
   // Charge la couleur du thème depuis SharedPreferences
   void _loadThemeColor() async {
-    // Ensure SharedPreferences is imported and available
     final prefs = await SharedPreferences.getInstance();
     final colorValue = prefs.getInt('primaryColorValue');
     if (colorValue != null) {
@@ -35,23 +35,22 @@ class _MyAppState extends State<MyApp> {
         _primarySwatch = MaterialColor(
           _primaryColorValue,
           <int, Color>{
-            50: Color(_primaryColorValue).withOpacity(0.1),
-            100: Color(_primaryColorValue).withOpacity(0.2),
-            200: Color(_primaryColorValue).withOpacity(0.3),
-            300: Color(_primaryColorValue).withOpacity(0.4),
-            400: Color(_primaryColorValue).withOpacity(0.5),
-            500: Color(_primaryColorValue).withOpacity(0.6),
-            600: Color(_primaryColorValue).withOpacity(0.7),
-            700: Color(_primaryColorValue).withOpacity(0.8),
-            800: Color(_primaryColorValue).withOpacity(0.9),
-            900: Color(_primaryColorValue).withOpacity(1.0),
+            50: Color(_primaryColorValue).withAlpha((255 * 0.1).round()),
+            100: Color(_primaryColorValue).withAlpha((255 * 0.2).round()),
+            200: Color(_primaryColorValue).withAlpha((255 * 0.3).round()),
+            300: Color(_primaryColorValue).withAlpha((255 * 0.4).round()),
+            400: Color(_primaryColorValue).withAlpha((255 * 0.5).round()),
+            500: Color(_primaryColorValue).withAlpha((255 * 0.6).round()),
+            600: Color(_primaryColorValue).withAlpha((255 * 0.7).round()),
+            700: Color(_primaryColorValue).withAlpha((255 * 0.8).round()),
+            800: Color(_primaryColorValue).withAlpha((255 * 0.9).round()),
+            900: Color(_primaryColorValue).withAlpha((255 * 1.0).round()),
           },
         );
       });
     }
   }
 
-  // Change la couleur du thème et la sauvegarde
   void _changeThemeColor(Color newColor) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('primaryColorValue', newColor.value);
@@ -60,20 +59,21 @@ class _MyAppState extends State<MyApp> {
       _primarySwatch = MaterialColor(
         newColor.value,
         <int, Color>{
-          50: newColor.withOpacity(0.1),
-          100: newColor.withOpacity(0.2),
-          200: newColor.withOpacity(0.3),
-          300: newColor.withOpacity(0.4),
-          400: newColor.withOpacity(0.5),
-          500: newColor.withOpacity(0.6),
-          600: newColor.withOpacity(0.7),
-          700: newColor.withOpacity(0.8),
-          800: newColor.withOpacity(0.9),
-          900: newColor.withOpacity(1.0),
+          50: newColor.withAlpha((255 * 0.1).round()), // Corrigé avec withAlpha
+          100: newColor.withAlpha((255 * 0.2).round()),
+          200: newColor.withAlpha((255 * 0.3).round()),
+          300: newColor.withAlpha((255 * 0.4).round()),
+          400: newColor.withAlpha((255 * 0.5).round()),
+          500: newColor.withAlpha((255 * 0.6).round()),
+          600: newColor.withAlpha((255 * 0.7).round()),
+          700: newColor.withAlpha((255 * 0.8).round()),
+          800: newColor.withAlpha((255 * 0.9).round()),
+          900: newColor.withAlpha((255 * 1.0).round()),
         },
       );
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +84,7 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: _primarySwatch,
         colorScheme: ColorScheme.fromSwatch(
           primarySwatch: _primarySwatch,
-          // secondary: Colors.amber, // You can define a secondary color if needed
+          // secondary: Colors.amber,
         ),
         scaffoldBackgroundColor: Colors.white,
         appBarTheme: AppBarTheme(
@@ -106,8 +106,9 @@ class _MyAppState extends State<MyApp> {
         listTileTheme: ListTileThemeData(
           iconColor: _primarySwatch[700],
           textColor: Colors.blueGrey[800],
-          selectedTileColor: _primarySwatch.withOpacity(0.1),
-          // hoverColor: _primarySwatch.withOpacity(0.05), // REMOVED: This parameter does not exist in ListTileThemeData
+          // Correction pour withOpacity
+          selectedTileColor: _primarySwatch.withAlpha((255 * 0.1).round()),
+          // hoverColor: _primarySwatch.withAlpha((255 * 0.05).round()), // hoverColor n'existe pas dans ListTileThemeData
         ),
         textTheme: GoogleFonts.poppinsTextTheme(
           Theme.of(context).textTheme.apply(
@@ -152,14 +153,13 @@ class _MyAppState extends State<MyApp> {
           hintStyle: GoogleFonts.poppins(color: Colors.grey[500]),
           labelStyle: GoogleFonts.poppins(color: Colors.black87),
         ),
-        // --- FIX: Use DialogThemeData instead of DialogTheme ---
         dialogTheme: DialogThemeData(
           titleTextStyle: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
           contentTextStyle: GoogleFonts.poppins(fontSize: 14, color: Colors.black54),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
       ),
-      home: ChatScreen(title: 'MyAI Assistant'),
+      home: const Intro(),
       builder: (context, child) {
         return ThemeProvider(
           changeTheme: _changeThemeColor,
@@ -189,7 +189,7 @@ class ThemeProvider extends InheritedWidget {
   }
 
   @override
-  bool updateShouldNotify(covariant ThemeProvider oldWidget) { // Added covariant keyword
+  bool updateShouldNotify(covariant ThemeProvider oldWidget) {
     return oldWidget.currentPrimaryColor != currentPrimaryColor;
   }
 }
