@@ -1,18 +1,13 @@
 // Chat Screen
 import 'package:ai_test/api/api_call.dart';
 import 'package:ai_test/pages/about.dart';
-import 'package:ai_test/pages/profile.dart'; // Assurez-vous que cette page existe
+import 'package:ai_test/pages/profile.dart';
 import 'package:ai_test/pages/settings.dart';
 import 'package:ai_test/screens/chatwidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // Pour SystemNavigator.pop()
+import 'package:flutter/services.dart'; 
 import 'package:google_fonts/google_fonts.dart';
-
-// Assuming ApiKeyWidget is defined elsewhere, like in screenswidget.dart
-// If not, you'll need to define it or ensure it's imported correctly.
-// For example:
-// import 'package:ai_test/others/screenswidget.dart'; // If ApiKeyWidget is there
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key, required this.title});
@@ -103,7 +98,6 @@ class _ChatScreenState extends State<ChatScreen> {
             DrawerHeader(
               decoration: BoxDecoration(
                 color: theme.primaryColor,
-                // Vous pouvez ajouter une image de fond si vous voulez
                 // image: DecorationImage(
                 //   image: AssetImage("assets/images/drawer_background.png"),
                 //   fit: BoxFit.cover,
@@ -118,7 +112,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     radius: 30,
                     backgroundColor: Colors.white.withOpacity(0.2), // Effet de transparence
                     child: Icon(
-                      Icons.bubble_chart, // Ou une icône d'IA, ou votre logo
+                      Icons.bubble_chart, 
                       size: 40,
                       color: Colors.white,
                     ),
@@ -174,8 +168,8 @@ class _ChatScreenState extends State<ChatScreen> {
                 Navigator.pop(context);
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const Settings()));
               },
-              selectedTileColor: theme.primaryColor.withOpacity(0.1),
-              hoverColor: theme.primaryColor.withOpacity(0.05),
+              selectedTileColor: theme.primaryColor.withAlpha((255 * 0.1).round()),
+              hoverColor: theme.primaryColor.withAlpha((255 * 0.05).round()),
             ),
             const Divider(indent: 15, endIndent: 15), // Séparateur visuel
             ListTile(
