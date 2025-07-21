@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
-import 'package:google_fonts/google_fonts.dart'; // Import pour des polices cohérentes
+import 'package:google_fonts/google_fonts.dart';
 
 class ChatWidget extends StatefulWidget {
   const ChatWidget({required this.apiKey, super.key});
@@ -14,16 +14,15 @@ class ChatWidget extends StatefulWidget {
 
 class _ChatWidgetState extends State<ChatWidget> {
   late final GenerativeModel _model;
-  late ChatSession _chat; // Rendu non-final pour pouvoir être réinitialisé si nécessaire
+  late ChatSession _chat;
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _textController = TextEditingController();
   final FocusNode _textFieldFocus = FocusNode(debugLabel: 'TextField');
   bool _loading = false;
 
-  // --- CORRECTION CLÉ : Maintenir notre propre liste de messages pour l'affichage ---
   final List<Content> _messages = []; // Cette liste contiendra l'historique du chat pour l'affichage
 
-  // Paramètres de sécurité (déjà bons, conservés pour le contexte)
+  // Paramètres de sécurité
   final safetySettings = [
     SafetySetting(HarmCategory.harassment, HarmBlockThreshold.low),
     SafetySetting(HarmCategory.hateSpeech, HarmBlockThreshold.low),
@@ -37,7 +36,6 @@ class _ChatWidgetState extends State<ChatWidget> {
       apiKey: widget.apiKey,
       safetySettings: safetySettings, // Appliquer les paramètres de sécurité
     );
-    // --- CORRECTION CLÉ : Initialiser la session de chat avec notre liste d'historique modifiable ---
     _chat = _model.startChat(history: _messages); // Passer notre liste _messages ici
   }
 
@@ -63,8 +61,7 @@ class _ChatWidgetState extends State<ChatWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // --- CORRECTION CLÉ : Utiliser notre propre liste _messages pour l'affichage ---
-    final historyToDisplay = _messages; // Maintenant, nous utilisons notre liste modifiable pour l'affichage
+    final historyToDisplay = _messages;
 
     // Ajouter un arrière-plan légèrement teinté à la zone de chat
     return Container(
@@ -75,7 +72,6 @@ class _ChatWidgetState extends State<ChatWidget> {
             child: ListView.builder(
               controller: _scrollController,
               padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0), // Rembourrage autour des messages
-              // --- CORRECTION CLÉ : Utiliser notre propre liste _messages pour itemCount et itemBuilder ---
               itemBuilder: (context, idx) {
                 final content = historyToDisplay[idx]; // Utiliser notre liste
                 final text = content.parts
@@ -184,7 +180,6 @@ class _ChatWidgetState extends State<ChatWidget> {
     try {
       final response = await _chat.sendMessage(userMessage);
 
-      // --- FIX START: Accessing AI response content correctly ---
       if (response.candidates.isNotEmpty) {
         final aiResponseContent = response.candidates.first.content;
         if (aiResponseContent != null) {
@@ -197,7 +192,6 @@ class _ChatWidgetState extends State<ChatWidget> {
       } else {
         _showError('Aucune réponse valide de l\'IA reçue.');
       }
-      // --- FIX END ---
 
     } catch (e) {
       _showError('Erreur: ${e.toString()}');
