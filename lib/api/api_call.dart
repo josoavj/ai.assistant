@@ -50,26 +50,36 @@ class ApiKeyWidget extends StatelessWidget {
                     child: TextField(
                     style: GoogleFonts.poppins(
                            fontSize: 12,
-                           color: Colors.white, 
+                           color: Colors.white,
                            fontWeight: FontWeight.w400),
-                    decoration:
+                    obscureText: true,
+                      decoration:
                       textFieldDecoration(context, 'Entrer votre clé d''API'),
                       controller: _textController,
-                      // Condition : Feature
-                      /**
-                       * Condition pour vérifier si le champ est vide
-                       * Si le champ est vide alors un alerte est envoyé 
-                       * à l'utilisateur pour lui demander de remplir le champ
-                       */
                       onSubmitted: (value) {
-                        onSubmitted(value);
+                        // Dans la méthode onPressed du TextButton et onSubmitted du TextField:
+                        if (_textController.text.trim().isEmpty) {
+                          // Afficher un message d'erreur, par exemple avec un SnackBar
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Veuillez entrer une clé API.')),
+                          );
+                          return; // Ne pas appeler onSubmitted si le champ est vide
+                        }
+                        onSubmitted(_textController.text.trim());
                       },
                     ),
                   ),
                   const SizedBox(height: 5),
                   TextButton(
                     onPressed: () {
-                      onSubmitted(_textController.value.text);
+                      if (_textController.text.trim().isEmpty) {
+                        // Afficher un message d'erreur, par exemple avec un SnackBar
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Veuillez entrer une clé API.')),
+                        );
+                        return; // Ne pas appeler onSubmitted si le champ est vide
+                      }
+                      onSubmitted(_textController.text.trim());
                     },
                     child: AbsorbPointer(
                       child: Text('Connecter', 
