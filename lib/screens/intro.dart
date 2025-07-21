@@ -71,7 +71,7 @@ class _IntroState extends State<Intro> with SingleTickerProviderStateMixin {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final avatarDiameter = screenWidth * 0.4;
-    
+
     return Scaffold(
       body: Container(
         // ... (votre décoration de gradient) ...
