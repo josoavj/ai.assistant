@@ -70,12 +70,8 @@ class _IntroState extends State<Intro> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-
-    // Définir la taille de l'avatar en fonction de la dimension la plus petite
-    // ou d'une fraction de la largeur de l'écran.
-    // Vous pouvez ajuster ce pourcentage selon vos préférences.
-    final avatarDiameter = screenWidth * 0.4; // Par exemple, 40% de la largeur de l'écran
-
+    final avatarDiameter = screenWidth * 0.4;
+    
     return Scaffold(
       body: Container(
         // ... (votre décoration de gradient) ...
