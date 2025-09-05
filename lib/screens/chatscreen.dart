@@ -1,18 +1,14 @@
-// Chat Screen
 import 'package:ai_test/api/api_call.dart';
-import 'package:ai_test/pages/about.dart';
-import 'package:ai_test/pages/profile.dart';
-import 'package:ai_test/pages/settings.dart';
-import 'package:ai_test/screens/chatwidget.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:ai_test/main.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; 
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import '../others/app_theme.dart';
+import 'chatwidget.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key, required this.title});
-
-  final String title;
+  const ChatScreen({super.key});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -38,20 +34,23 @@ class _ChatScreenState extends State<ChatScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Ferme la boîte de dialogue
+                Navigator.of(context).pop();
               },
               child: Text(
                 "Annuler",
-                style: GoogleFonts.poppins(color: Theme.of(context).primaryColor),
+                style: GoogleFonts.poppins(
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.w600),
               ),
             ),
             TextButton(
               onPressed: () {
-                SystemNavigator.pop(); // Quitte l'application
+                SystemNavigator.pop();
               },
               child: Text(
                 "Quitter",
-                style: GoogleFonts.poppins(color: Colors.red), // Couleur pour l'action de sortie
+                style: GoogleFonts.poppins(
+                    color: Colors.red, fontWeight: FontWeight.w600),
               ),
             ),
           ],
@@ -62,143 +61,157 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Accès au thème de l'application
-    final ThemeData theme = Theme.of(context);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.title,
-          style: GoogleFonts.poppins(
-            color: Colors.white,
-            fontSize: 20, // Taille ajustée pour cohérence
-            fontWeight: FontWeight.bold,
+    // Utilisation de Consumer pour écouter les changements de thème
+    return Consumer<ThemeNotifier>(
+      builder: (context, themeNotifier, child) {
+        final ThemeData theme = Theme.of(context);
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              'My Chat-AI',
+              style: GoogleFonts.poppins(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            centerTitle: true,
+            actions: [
+              Tooltip(
+                message: "Mon Profil",
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.of(context).pushNamed('/profile');
+                  },
+                  icon: const Icon(Icons.person, color: Colors.white),
+                ),
+              ),
+            ],
           ),
-        ),
-        centerTitle: true,
-        actions: [
-          Tooltip( // Ajout d'un Tooltip pour l'icône de profil
-            message: "Mon Profil",
-            child: IconButton(
-              iconSize: 24, // Taille d'icône légèrement plus grande
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const Profile()));
-              },
-              icon: const Icon(CupertinoIcons.profile_circled),
-            ),
+          drawer: _AppDrawer(
+            onExit: _showExitConfirmationDialog,
           ),
-          const SizedBox(width: 8), // Espacement après l'icône
-        ],
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero, // Important pour supprimer le padding par défaut
-          children: [
-            // DrawerHeader amélioré
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: theme.primaryColor,
-                // image: DecorationImage(
-                //   image: AssetImage("assets/images/drawer_background.png"),
-                //   fit: BoxFit.cover,
-                // ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.end, // Alignez le contenu en bas
-                children: [
-                  // Logo ou avatar de l'application
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.white.withOpacity(0.2), // Effet de transparence
-                    child: Icon(
-                      Icons.bubble_chart, 
-                      size: 40,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'MyAI ChatBot', // Titre plus descriptif
-                    style: GoogleFonts.poppins(
-                      fontSize: 22, // Taille ajustée
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  Text(
-                    'Votre assistant intelligent', // Sous-titre
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      color: Colors.white.withOpacity(0.8),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // Éléments du Drawer
-            ListTile(
-              leading: Icon(CupertinoIcons.info, color: theme.primaryColor), // Couleur de l'icône
-              title: Text(
-                'À propos',
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  color: Colors.blueGrey[800], // Couleur du texte
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              onTap: () {
-                Navigator.pop(context); // Ferme le drawer avant la navigation
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const About()));
-              },
-              selectedTileColor: theme.primaryColor.withOpacity(0.1), // Couleur au survol/sélection
-              hoverColor: theme.primaryColor.withOpacity(0.05),
-            ),
-            ListTile(
-              leading: Icon(CupertinoIcons.settings_solid, color: theme.primaryColor),
-              title: Text(
-                'Paramètres',
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  color: Colors.blueGrey[800],
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const Settings()));
-              },
-              selectedTileColor: theme.primaryColor.withAlpha((255 * 0.1).round()),
-              hoverColor: theme.primaryColor.withAlpha((255 * 0.05).round()),
-            ),
-            const Divider(indent: 15, endIndent: 15), // Séparateur visuel
-            ListTile(
-              leading: Icon(Icons.exit_to_app, color: Colors.redAccent), // Une couleur distinctive pour quitter
-              title: Text(
-                'Quitter',
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  color: Colors.redAccent,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              onTap: () {
-                Navigator.pop(context); // Ferme le drawer
-                _showExitConfirmationDialog(); // Affiche la boîte de dialogue
-              },
-              selectedTileColor: Colors.redAccent.withOpacity(0.1),
-              hoverColor: Colors.redAccent.withOpacity(0.05),
-            ),
-          ],
-        ),
-      ),
-      body: switch (apiKey) {
-        final providedKey? => ChatWidget(apiKey: providedKey),
-      // Make sure ApiKeyWidget is available, e.g., defined in screenswidget.dart
-        _ => ApiKeyWidget(onSubmitted: (key) {
-          setState(() => apiKey = key);
-        }),
+          body: switch (apiKey) {
+            final providedKey? => ChatWidget(apiKey: providedKey),
+            _ => ApiKeyWidget(onSubmitted: (key) {
+              setState(() => apiKey = key);
+            }),
+          },
+        );
       },
     );
   }
 }
+
+// Widget pour le tiroir de navigation (Drawer)
+class _AppDrawer extends StatelessWidget {
+  final VoidCallback onExit;
+
+  const _AppDrawer({required this.onExit});
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            decoration: BoxDecoration(
+              color: isDark ? theme.primaryColor : theme.primaryColor,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                CircleAvatar(
+                  radius: 30,
+                  backgroundColor: Colors.white.withOpacity(0.2),
+                  child: const Icon(
+                    Icons.bubble_chart,
+                    size: 40,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  'MyAI ChatBot',
+                  style: GoogleFonts.poppins(
+                    fontSize: 22,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                Text(
+                  'Votre assistant intelligent',
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    color: Colors.white.withOpacity(0.8),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          ListTile(
+            leading: Icon(Icons.info, color: theme.primaryColor),
+            title: Text(
+              'À propos',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                color: isDark ? Colors.white70 : Colors.blueGrey[800],
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.of(context).pushNamed('/about');
+            },
+            selectedTileColor: theme.primaryColor.withOpacity(0.1),
+            hoverColor: theme.primaryColor.withOpacity(0.05),
+          ),
+          ListTile(
+            leading: Icon(Icons.settings, color: theme.primaryColor),
+            title: Text(
+              'Paramètres',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                color: isDark ? Colors.white70 : Colors.blueGrey[800],
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.of(context).pushNamed('/settings');
+            },
+            selectedTileColor: theme.primaryColor.withOpacity(0.1),
+            hoverColor: theme.primaryColor.withOpacity(0.05),
+          ),
+          const Divider(indent: 15, endIndent: 15),
+          ListTile(
+            leading: const Icon(Icons.exit_to_app, color: Colors.redAccent),
+            title: Text(
+              'Quitter',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                color: Colors.redAccent,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            onTap: () {
+              Navigator.pop(context);
+              onExit();
+            },
+            selectedTileColor: Colors.redAccent.withOpacity(0.1),
+            hoverColor: Colors.redAccent.withOpacity(0.05),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Assurez-vous d'avoir ces widgets dans votre projet
+// class ChatWidget extends StatelessWidget { ... }
+// class ApiKeyWidget extends StatelessWidget { ... }
