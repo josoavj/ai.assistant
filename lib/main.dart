@@ -1,31 +1,175 @@
+import 'package:ai_test/pages/settings.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 import 'package:ai_test/screens/chatscreen.dart';
+import 'package:ai_test/screens/settings.dart';
 
-// Class to manage and notify about theme changes
-class ThemeProvider with ChangeNotifier {
-  static const String _themeModeKey = 'themeMode';
+// Classe qui contient les définitions de thème (light et dark).
+class AppThemes {
+  static MaterialColor createMaterialColor(Color color) {
+    List strengths = <double>[.05, .1, .2, .3, .4, .5, .6, .7, .8, .9];
+    Map<int, Color> swatch = {};
+    final int r = color.red, g = color.green, b = color.blue;
 
-  ThemeMode _themeMode = ThemeMode.dark; // Default to dark theme
-
-  ThemeMode get themeMode => _themeMode;
-
-  ThemeProvider() {
-    _loadThemeMode();
+    for (int i = 0; i < 10; i++) {
+      swatch[(strengths[i] * 1000).round()] = Color.fromRGBO(r, g, b, strengths[i]);
+    }
+    return MaterialColor(color.value, swatch);
   }
 
-  Future<void> _loadThemeMode() async {
+  static ThemeData lightTheme(MaterialColor primarySwatch) {
+    return ThemeData(
+      brightness: Brightness.light,
+      primarySwatch: primarySwatch,
+      colorScheme: ColorScheme.fromSwatch(
+        primarySwatch: primarySwatch,
+        brightness: Brightness.light,
+      ),
+      scaffoldBackgroundColor: Colors.white,
+      appBarTheme: AppBarTheme(
+        backgroundColor: primarySwatch,
+        foregroundColor: Colors.white,
+        elevation: 4.0,
+        titleTextStyle: GoogleFonts.poppins(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
+      ),
+      textTheme: GoogleFonts.poppinsTextTheme(
+        ThemeData.light().textTheme.apply(
+          bodyColor: Colors.black87,
+          displayColor: Colors.black,
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: primarySwatch,
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          textStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.0),
+          borderSide: BorderSide(color: primarySwatch[200]!),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.0),
+          borderSide: BorderSide(color: primarySwatch, width: 2.0),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.0),
+          borderSide: BorderSide(color: primarySwatch[300]!),
+        ),
+        hintStyle: GoogleFonts.poppins(color: Colors.grey[500]),
+        labelStyle: GoogleFonts.poppins(color: Colors.black87),
+      ),
+    );
+  }
+
+  static ThemeData darkTheme(MaterialColor primarySwatch) {
+    return ThemeData(
+      brightness: Brightness.dark,
+      primarySwatch: primarySwatch,
+      colorScheme: ColorScheme.fromSwatch(
+        primarySwatch: primarySwatch,
+        brightness: Brightness.dark,
+      ),
+      scaffoldBackgroundColor: Colors.grey[900],
+      appBarTheme: AppBarTheme(
+        backgroundColor: primarySwatch[700],
+        foregroundColor: Colors.white,
+        elevation: 4.0,
+        titleTextStyle: GoogleFonts.poppins(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
+      ),
+      textTheme: GoogleFonts.poppinsTextTheme(
+        ThemeData.dark().textTheme.apply(
+          bodyColor: Colors.white70,
+          displayColor: Colors.white,
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: primarySwatch,
+          foregroundColor: Colors.white,
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.0),
+          borderSide: BorderSide(color: primarySwatch[700]!),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.0),
+          borderSide: BorderSide(color: primarySwatch[300]!, width: 2.0),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.0),
+          borderSide: BorderSide(color: primarySwatch[600]!),
+        ),
+        hintStyle: GoogleFonts.poppins(color: Colors.grey[500]),
+        labelStyle: GoogleFonts.poppins(color: Colors.white70),
+      ),
+    );
+  }
+}
+
+// Gère l'état du thème de l'application.
+class ThemeNotifier with ChangeNotifier {
+  static const String _themeModeKey = 'themeMode';
+  static const String _primaryColorValueKey = 'primaryColorValue';
+
+  ThemeMode _currentThemeMode = ThemeMode.light;
+  MaterialColor _primarySwatch = Colors.blue;
+
+  ThemeMode get themeMode => _currentThemeMode;
+  MaterialColor get primarySwatch => _primarySwatch;
+
+  ThemeNotifier() {
+    _loadThemeSettings();
+  }
+
+  Future<void> _loadThemeSettings() async {
     final prefs = await SharedPreferences.getInstance();
-    final isDarkMode = prefs.getBool(_themeModeKey) ?? true;
-    _themeMode = isDarkMode ? ThemeMode.dark : ThemeMode.light;
+    final colorValue = prefs.getInt(_primaryColorValueKey);
+    if (colorValue != null) {
+      _primarySwatch = AppThemes.createMaterialColor(Color(colorValue));
+    }
+    final themeModeIndex = prefs.getInt(_themeModeKey);
+    if (themeModeIndex != null) {
+      _currentThemeMode = ThemeMode.values[themeModeIndex];
+    }
     notifyListeners();
   }
 
   void toggleThemeMode() async {
-    _themeMode = _themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+    _currentThemeMode = _currentThemeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_themeModeKey, _themeMode == ThemeMode.dark);
+    await prefs.setInt(_themeModeKey, _currentThemeMode.index);
+    notifyListeners();
+  }
+
+  void changeThemeColor(Color newColor) async {
+    _primarySwatch = AppThemes.createMaterialColor(newColor);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_primaryColorValueKey, newColor.value);
     notifyListeners();
   }
 }
@@ -33,53 +177,32 @@ class ThemeProvider with ChangeNotifier {
 void main() {
   runApp(
     ChangeNotifierProvider(
-      create: (context) => ThemeProvider(),
-      child: const MyAI(),
+      create: (context) => ThemeNotifier(),
+      child: const MyApp(),
     ),
   );
 }
 
-class MyAI extends StatelessWidget {
-  const MyAI({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeProvider>(
-      builder: (context, themeProvider, child) {
+    return Consumer<ThemeNotifier>(
+      builder: (context, themeNotifier, child) {
         return MaterialApp(
+          title: 'MyAI Assistant',
           debugShowCheckedModeBanner: false,
-          title: 'CHAT-AI',
-          theme: ThemeHelper.lightTheme(),
-          darkTheme: ThemeHelper.darkTheme(),
-          themeMode: themeProvider.themeMode,
-          home: const ChatScreen(title: 'My Chat-AI'),
+          theme: AppThemes.lightTheme(themeNotifier.primarySwatch),
+          darkTheme: AppThemes.darkTheme(themeNotifier.primarySwatch),
+          themeMode: themeNotifier.themeMode,
+          routes: {
+            '/': (context) => const ChatScreen(title: '',),
+            '/settings': (context) => const Settings(),
+          },
+          initialRoute: '/',
         );
       },
-    );
-  }
-}
-
-// Helper class to define your themes
-class ThemeHelper {
-  static ThemeData lightTheme() {
-    return ThemeData(
-      colorScheme: ColorScheme.fromSeed(
-        brightness: Brightness.light,
-        seedColor: const Color.fromARGB(255, 171, 222, 244),
-      ),
-      useMaterial3: true,
-      // You can add other light theme properties here
-    );
-  }
-
-  static ThemeData darkTheme() {
-    return ThemeData(
-      colorScheme: ColorScheme.fromSeed(
-        brightness: Brightness.dark,
-        seedColor: const Color.fromARGB(255, 171, 222, 244),
-      ),
-      useMaterial3: true,
-      // You can add other dark theme properties here
     );
   }
 }
