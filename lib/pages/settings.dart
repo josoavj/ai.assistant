@@ -4,6 +4,8 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:provider/provider.dart';
 import 'package:ai_test/main.dart';
 
+import '../others/app_theme.dart';
+
 class Settings extends StatelessWidget {
   const Settings({super.key});
 
