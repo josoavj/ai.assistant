@@ -1,4 +1,3 @@
-// API Key Injection & Usage
 import 'package:ai_test/others/screenswidget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
