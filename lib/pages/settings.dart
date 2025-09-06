@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../others/app_theme.dart';
 import 'login.dart';
 
@@ -13,6 +14,7 @@ class Settings extends StatelessWidget {
     final themeProvider = Provider.of<ThemeNotifier>(context);
     final ThemeData currentTheme = Theme.of(context);
 
+    // Fonction pour afficher le dialogue de sélection de couleur
     void showColorPickerDialog() {
       Color pickerColor = themeProvider.primarySwatch;
       showDialog(
@@ -58,10 +60,55 @@ class Settings extends StatelessWidget {
       );
     }
 
+    // Fonction pour afficher le dialogue de changement de clé API
+    void showApiKeyDialog() async {
+      final prefs = await SharedPreferences.getInstance();
+      final currentKey = prefs.getString('gemini_api_key') ?? '';
+      final TextEditingController keyController = TextEditingController(text: currentKey);
+
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Changer de clé API', style: GoogleFonts.poppins()),
+            content: TextField(
+              controller: keyController,
+              decoration: InputDecoration(
+                hintText: 'Entrez votre nouvelle clé API',
+                hintStyle: GoogleFonts.poppins(),
+                border: const OutlineInputBorder(),
+              ),
+              obscureText: true,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Annuler'),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  if (keyController.text.isNotEmpty) {
+                    await prefs.setString('gemini_api_key', keyController.text);
+                    if (context.mounted) {
+                      Navigator.of(context).pop();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Clé API mise à jour.', style: GoogleFonts.poppins())),
+                      );
+                    }
+                  }
+                },
+                child: const Text('Enregistrer'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     // Fonction de déconnexion
     void _handleLogout() {
-      // Navigue vers la page de connexion
-      // pushReplacement empêche l'utilisateur de revenir en arrière
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const LoginPage()),
@@ -108,6 +155,20 @@ class Settings extends StatelessWidget {
               color: currentTheme.primaryColor,
             ),
             activeColor: currentTheme.primaryColor,
+          ),
+          const Divider(),
+          // Nouvelle option pour changer la clé API
+          ListTile(
+            leading: Icon(Icons.vpn_key, color: currentTheme.primaryColor),
+            title: Text(
+              'Clé API',
+              style: GoogleFonts.poppins(),
+            ),
+            subtitle: Text(
+              'Mettre à jour la clé API pour le chat',
+              style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[600]),
+            ),
+            onTap: showApiKeyDialog,
           ),
           const Divider(),
           // Option de deconnexion
