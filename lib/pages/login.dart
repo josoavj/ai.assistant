@@ -1,10 +1,9 @@
-import 'package:ai_test/others/app_theme.dart';
-import 'package:ai_test/pages/profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../data/users.dart';
+import '../screens/chatscreen.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -63,8 +62,11 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
@@ -78,19 +80,19 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Spacer(),
-                    _buildHeader(),
+                    _buildHeader(colorScheme, textTheme),
                     const SizedBox(height: 48),
-                    _buildLoginForm(),
+                    _buildLoginForm(colorScheme),
                     const SizedBox(height: 24),
-                    _buildLoginButton(),
+                    _buildLoginButton(colorScheme, textTheme),
                     const SizedBox(height: 24),
-                    _buildRememberMe(),
+                    _buildRememberMe(colorScheme, textTheme),
                     const SizedBox(height: 32),
-                    _buildDivider(),
+                    _buildDivider(colorScheme, textTheme),
                     const SizedBox(height: 24),
-                    _buildTestCredentials(),
+                    _buildTestCredentials(colorScheme, textTheme),
                     const Spacer(),
-                    _buildFooter(),
+                    _buildFooter(colorScheme, textTheme),
                   ],
                 ),
               ),
@@ -101,19 +103,19 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(ColorScheme colorScheme, TextTheme textTheme) {
     return Column(
       children: [
         Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: Colors.blue.withOpacity(0.1),
+            color: colorScheme.primary.withOpacity(0.1),
             shape: BoxShape.circle,
           ),
-          child: const Icon(
+          child: Icon(
             CupertinoIcons.person_circle_fill,
             size: 64,
-            color: Colors.blue,
+            color: colorScheme.primary,
           ),
         ),
         const SizedBox(height: 24),
@@ -122,7 +124,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
           style: GoogleFonts.poppins(
             fontSize: 28,
             fontWeight: FontWeight.w700,
-            color: Colors.grey[800],
+            color: textTheme.titleLarge?.color,
           ),
         ),
         const SizedBox(height: 8),
@@ -130,27 +132,27 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
           "Connectez-vous à votre compte",
           style: GoogleFonts.poppins(
             fontSize: 16,
-            color: Colors.grey[600],
+            color: textTheme.bodyMedium?.color,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildLoginForm() {
+  Widget _buildLoginForm(ColorScheme colorScheme) {
     return Form(
       key: _formKey,
       child: Column(
         children: [
-          _buildUsernameField(),
+          _buildUsernameField(colorScheme),
           const SizedBox(height: 16),
-          _buildPasswordField(),
+          _buildPasswordField(colorScheme),
         ],
       ),
     );
   }
 
-  Widget _buildUsernameField() {
+  Widget _buildUsernameField(ColorScheme colorScheme) {
     return TextFormField(
       controller: _usernameController,
       decoration: InputDecoration(
@@ -160,7 +162,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
           borderRadius: BorderRadius.circular(12),
         ),
         filled: true,
-        fillColor: Colors.white,
+        fillColor: colorScheme.surface,
       ),
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -171,7 +173,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildPasswordField() {
+  Widget _buildPasswordField(ColorScheme colorScheme) {
     return TextFormField(
       controller: _passwordController,
       obscureText: _isObscure,
@@ -190,7 +192,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
           borderRadius: BorderRadius.circular(12),
         ),
         filled: true,
-        fillColor: Colors.white,
+        fillColor: colorScheme.surface,
       ),
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -201,27 +203,27 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildLoginButton() {
+  Widget _buildLoginButton(ColorScheme colorScheme, TextTheme textTheme) {
     return SizedBox(
       width: double.infinity,
       height: 50,
       child: ElevatedButton(
         onPressed: _isLoading ? null : _handleLogin,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blue,
-          foregroundColor: Colors.white,
+          backgroundColor: colorScheme.primary,
+          foregroundColor: colorScheme.onPrimary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
           elevation: 2,
         ),
         child: _isLoading
-            ? const SizedBox(
+            ? SizedBox(
           width: 20,
           height: 20,
           child: CircularProgressIndicator(
             strokeWidth: 2,
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            valueColor: AlwaysStoppedAnimation<Color>(colorScheme.onPrimary),
           ),
         )
             : Text(
@@ -235,7 +237,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildRememberMe() {
+  Widget _buildRememberMe(ColorScheme colorScheme, TextTheme textTheme) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -253,7 +255,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               "Se souvenir de moi",
               style: GoogleFonts.poppins(
                 fontSize: 14,
-                color: Colors.grey[600],
+                color: textTheme.bodySmall?.color,
               ),
             ),
           ],
@@ -266,7 +268,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
             "Mot de passe oublié?",
             style: GoogleFonts.poppins(
               fontSize: 14,
-              color: Colors.blue,
+              color: colorScheme.primary,
             ),
           ),
         ),
@@ -274,32 +276,32 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildDivider() {
+  Widget _buildDivider(ColorScheme colorScheme, TextTheme textTheme) {
     return Row(
       children: [
-        Expanded(child: Divider(color: Colors.grey[300])),
+        Expanded(child: Divider(color: colorScheme.onSurface.withOpacity(0.3))),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Text(
             "Comptes de test",
             style: GoogleFonts.poppins(
               fontSize: 14,
-              color: Colors.grey[600],
+              color: textTheme.bodySmall?.color,
             ),
           ),
         ),
-        Expanded(child: Divider(color: Colors.grey[300])),
+        Expanded(child: Divider(color: colorScheme.onSurface.withOpacity(0.3))),
       ],
     );
   }
 
-  Widget _buildTestCredentials() {
+  Widget _buildTestCredentials(ColorScheme colorScheme, TextTheme textTheme) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.amber.withOpacity(0.1),
+        color: colorScheme.secondaryContainer.withOpacity(0.5),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.amber.withOpacity(0.3)),
+        border: Border.all(color: colorScheme.secondaryContainer),
       ),
       child: Column(
         children: [
@@ -308,40 +310,52 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
             style: GoogleFonts.poppins(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: Colors.amber[700],
+              color: colorScheme.onSecondaryContainer,
             ),
           ),
           const SizedBox(height: 16),
           _buildTestUserCard(
-            "sudoted",
-            "Sudo Ted",
-            "Développeur · Antananarivo",
-            true,
-                () => _fillCredentials("sudoted", "password123"),
+            username: "sudoted",
+            fullName: "Sudo Ted",
+            description: "Développeur · Antananarivo",
+            isOnline: true,
+            onTap: () => _fillCredentials("sudoted", "password123"),
+            colorScheme: colorScheme,
+            textTheme: textTheme,
           ),
           const SizedBox(height: 12),
           _buildTestUserCard(
-            "marie_dev",
-            "Marie Rakoto",
-            "Designer · Fianarantsoa",
-            false,
-                () => _fillCredentials("marie_dev", "password456"),
+            username: "marie_dev",
+            fullName: "Marie Rakoto",
+            description: "Designer · Fianarantsoa",
+            isOnline: false,
+            onTap: () => _fillCredentials("marie_dev", "password456"),
+            colorScheme: colorScheme,
+            textTheme: textTheme,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildTestUserCard(String username, String fullName, String description, bool isOnline, VoidCallback onTap) {
+  Widget _buildTestUserCard({
+    required String username,
+    required String fullName,
+    required String description,
+    required bool isOnline,
+    required VoidCallback onTap,
+    required ColorScheme colorScheme,
+    required TextTheme textTheme,
+  }) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: colorScheme.surface,
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.grey[200]!),
+          border: Border.all(color: colorScheme.onSurface.withOpacity(0.1)),
         ),
         child: Row(
           children: [
@@ -349,13 +363,13 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               children: [
                 CircleAvatar(
                   radius: 20,
-                  backgroundColor: Colors.grey[300],
+                  backgroundColor: colorScheme.onSurface.withOpacity(0.1),
                   child: Text(
                     fullName.split(' ').map((n) => n[0]).join(),
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: Colors.grey[600],
+                      color: textTheme.bodyMedium?.color,
                     ),
                   ),
                 ),
@@ -369,7 +383,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                       decoration: BoxDecoration(
                         color: Colors.green,
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2),
+                        border: Border.all(color: colorScheme.surface, width: 2),
                       ),
                     ),
                   ),
@@ -385,20 +399,21 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
+                      color: textTheme.bodyLarge?.color,
                     ),
                   ),
                   Text(
                     "@$username",
                     style: GoogleFonts.poppins(
                       fontSize: 12,
-                      color: Colors.grey[600],
+                      color: textTheme.bodySmall?.color,
                     ),
                   ),
                   Text(
                     description,
                     style: GoogleFonts.poppins(
                       fontSize: 11,
-                      color: Colors.grey[500],
+                      color: textTheme.bodySmall?.color,
                     ),
                   ),
                 ],
@@ -406,7 +421,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
             ),
             Icon(
               CupertinoIcons.arrow_right_circle_fill,
-              color: Colors.blue,
+              color: colorScheme.primary,
               size: 20,
             ),
           ],
@@ -415,14 +430,14 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildFooter() {
+  Widget _buildFooter(ColorScheme colorScheme, TextTheme textTheme) {
     return Column(
       children: [
         Text(
           "Pas de compte?",
           style: GoogleFonts.poppins(
             fontSize: 14,
-            color: Colors.grey[600],
+            color: textTheme.bodySmall?.color,
           ),
         ),
         TextButton(
@@ -434,7 +449,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
             style: GoogleFonts.poppins(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: Colors.blue,
+              color: colorScheme.primary,
             ),
           ),
         ),
@@ -455,13 +470,11 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         _isLoading = true;
       });
 
-      // Simulation d'une requête réseau
       await Future.delayed(const Duration(milliseconds: 1500));
 
       final username = _usernameController.text.trim();
       final password = _passwordController.text.trim();
 
-      // Vérification des identifiants
       bool loginSuccess = false;
 
       if ((username == "sudoted" && password == "password123") ||
@@ -474,7 +487,6 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       });
 
       if (loginSuccess) {
-        // Afficher un message de succès
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
@@ -486,13 +498,11 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
           ),
         );
 
-        // Naviguer vers la page de profil
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const MyAI()),
+          MaterialPageRoute(builder: (context) => const ChatScreen()),
         );
       } else {
-        // Afficher une erreur
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
@@ -511,18 +521,20 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        final colorScheme = Theme.of(context).colorScheme;
+        final textTheme = Theme.of(context).textTheme;
         return AlertDialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           title: Text(
             "Mot de passe oublié",
-            style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600),
+            style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600, color: textTheme.bodyLarge?.color),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 "Entrez votre nom d'utilisateur pour réinitialiser votre mot de passe.",
-                style: GoogleFonts.poppins(fontSize: 14),
+                style: GoogleFonts.poppins(fontSize: 14, color: textTheme.bodyMedium?.color),
               ),
               const SizedBox(height: 16),
               TextField(
@@ -539,7 +551,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
             TextButton(
               child: Text(
                 "Annuler",
-                style: GoogleFonts.poppins(fontSize: 14),
+                style: GoogleFonts.poppins(fontSize: 14, color: colorScheme.onSurface),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -548,7 +560,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
             TextButton(
               child: Text(
                 "Envoyer",
-                style: GoogleFonts.poppins(fontSize: 14, color: Colors.blue),
+                style: GoogleFonts.poppins(fontSize: 14, color: colorScheme.primary),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -567,21 +579,23 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        final colorScheme = Theme.of(context).colorScheme;
+        final textTheme = Theme.of(context).textTheme;
         return AlertDialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           title: Text(
             "Créer un compte",
-            style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600),
+            style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600, color: textTheme.bodyLarge?.color),
           ),
           content: Text(
             "La création de compte n'est pas encore disponible. Utilisez les comptes de test pour le moment.",
-            style: GoogleFonts.poppins(fontSize: 14),
+            style: GoogleFonts.poppins(fontSize: 14, color: textTheme.bodyMedium?.color),
           ),
           actions: [
             TextButton(
               child: Text(
                 "Compris",
-                style: GoogleFonts.poppins(fontSize: 14, color: Colors.blue),
+                style: GoogleFonts.poppins(fontSize: 14, color: colorScheme.primary),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
