@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:provider/provider.dart';
-import 'package:ai_test/main.dart';
-
 import '../others/app_theme.dart';
+import 'login.dart';
 
 class Settings extends StatelessWidget {
   const Settings({super.key});
@@ -59,6 +58,17 @@ class Settings extends StatelessWidget {
       );
     }
 
+    // Fonction de déconnexion
+    void _handleLogout() {
+      // Navigue vers la page de connexion
+      // pushReplacement empêche l'utilisateur de revenir en arrière
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+      );
+    }
+
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Paramètres'),
@@ -100,6 +110,16 @@ class Settings extends StatelessWidget {
             activeColor: currentTheme.primaryColor,
           ),
           const Divider(),
+          // Option de deconnexion
+          ListTile(
+            leading: Icon(Icons.logout, color: currentTheme.colorScheme.error),
+            title: Text('Déconnexion', style: GoogleFonts.poppins()),
+            subtitle: Text(
+              'Se déconnecter de votre compte',
+              style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[600]),
+            ),
+            onTap: _handleLogout,
+          ),
         ],
       ),
     );
