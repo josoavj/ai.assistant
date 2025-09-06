@@ -20,7 +20,7 @@ class _ChatWidgetState extends State<ChatWidget> {
   final FocusNode _textFieldFocus = FocusNode(debugLabel: 'TextField');
   bool _loading = false;
 
-  final List<Content> _messages = []; // Cette liste contiendra l'historique du chat pour l'affichage
+  final List<Content> _messages = [];
 
   // Paramètres de sécurité
   final safetySettings = [
@@ -52,7 +52,7 @@ class _ChatWidgetState extends State<ChatWidget> {
           (_) => _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
         duration: const Duration(
-          milliseconds: 300, // Défilement plus rapide pour une sensation plus vive
+          milliseconds: 300, 
         ),
         curve: Curves.easeOut,
       ),
