@@ -1,7 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+
 import '../data/users.dart';
+import '../others/app_theme.dart';
+import 'login.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -12,6 +19,7 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   User? currentUser;
+  File? _profileImageFile;
 
   @override
   void initState() {
@@ -75,7 +83,7 @@ class _ProfileState extends State<Profile> {
             const SizedBox(height: 24),
 
             // Section Paramètres
-            _buildSettingsSection(),
+            _buildSettingsSection(context),
             const SizedBox(height: 24),
 
             // Section Actions
@@ -103,10 +111,12 @@ class _ProfileState extends State<Profile> {
                 CircleAvatar(
                   radius: 50,
                   backgroundColor: Colors.grey[300],
-                  backgroundImage: currentUser!.profileImageUrl.isNotEmpty
+                  backgroundImage: _profileImageFile != null
+                      ? FileImage(_profileImageFile!)
+                      : currentUser!.profileImageUrl.isNotEmpty
                       ? NetworkImage(currentUser!.profileImageUrl)
                       : null,
-                  child: currentUser!.profileImageUrl.isEmpty
+                  child: _profileImageFile == null && currentUser!.profileImageUrl.isEmpty
                       ? Text(
                     currentUser!.firstName[0] + currentUser!.lastName[0],
                     style: GoogleFonts.poppins(
@@ -261,7 +271,9 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget _buildSettingsSection() {
+  Widget _buildSettingsSection(BuildContext context) {
+    final themeProvider = Provider.of<ThemeNotifier>(context);
+
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -296,12 +308,9 @@ class _ProfileState extends State<Profile> {
               "Mode sombre",
               CupertinoIcons.moon_fill,
               Switch(
-                value: currentUser!.darkModeEnabled,
+                value: themeProvider.themeMode == ThemeMode.dark,
                 onChanged: (value) {
-                  UserManager.updateDarkModeSettings(value);
-                  setState(() {
-                    currentUser = UserManager.currentUser;
-                  });
+                  themeProvider.toggleThemeMode();
                 },
               ),
             ),
@@ -535,8 +544,7 @@ class _ProfileState extends State<Profile> {
               onPressed: () {
                 Navigator.of(context).pop();
                 UserManager.logout();
-                // Remplacez par votre page de connexion
-                // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginPage()));
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginPage()));
               },
             ),
           ],
@@ -666,9 +674,16 @@ class _ProfileState extends State<Profile> {
               ListTile(
                 leading: const Icon(CupertinoIcons.photo_fill),
                 title: const Text("Choisir depuis la galerie"),
-                onTap: () {
+                onTap: () async {
                   Navigator.pop(context);
-                  // Logique pour choisir depuis la galerie
+                  final ImagePicker picker = ImagePicker();
+                  final XFile? pickedFile =
+                  await picker.pickImage(source: ImageSource.gallery);
+                  if (pickedFile != null) {
+                    setState(() {
+                      _profileImageFile = File(pickedFile.path);
+                    });
+                  }
                 },
               ),
             ],
@@ -693,25 +708,25 @@ class _ProfileState extends State<Profile> {
             children: [
               TextField(
                 obscureText: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "Mot de passe actuel",
-                  border: const OutlineInputBorder(),
+                  border: OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 16),
               TextField(
                 obscureText: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "Nouveau mot de passe",
-                  border: const OutlineInputBorder(),
+                  border: OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 16),
               TextField(
                 obscureText: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "Confirmer le nouveau mot de passe",
-                  border: const OutlineInputBorder(),
+                  border: OutlineInputBorder(),
                 ),
               ),
             ],

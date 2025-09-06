@@ -20,7 +20,7 @@ class _ChatWidgetState extends State<ChatWidget> {
   final FocusNode _textFieldFocus = FocusNode(debugLabel: 'TextField');
   bool _loading = false;
 
-  final List<Content> _messages = []; // Cette liste contiendra l'historique du chat pour l'affichage
+  final List<Content> _messages = [];
 
   // Paramètres de sécurité
   final safetySettings = [
@@ -52,7 +52,7 @@ class _ChatWidgetState extends State<ChatWidget> {
           (_) => _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
         duration: const Duration(
-          milliseconds: 300, // Défilement plus rapide pour une sensation plus vive
+          milliseconds: 300,
         ),
         curve: Curves.easeOut,
       ),
@@ -63,31 +63,28 @@ class _ChatWidgetState extends State<ChatWidget> {
   Widget build(BuildContext context) {
     final historyToDisplay = _messages;
 
-    // Ajouter un arrière-plan légèrement teinté à la zone de chat
     return Container(
-      color: Colors.blueGrey[50], // Arrière-plan clair pour la zone des bulles de chat
+      color: Theme.of(context).scaffoldBackgroundColor,
       child: Column(
         children: [
           Expanded(
             child: ListView.builder(
               controller: _scrollController,
-              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0), // Rembourrage autour des messages
+              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
               itemBuilder: (context, idx) {
-                final content = historyToDisplay[idx]; // Utiliser notre liste
+                final content = historyToDisplay[idx];
                 final text = content.parts
                     .whereType<TextPart>()
                     .map<String>((e) => e.text)
                     .join('');
-                return MessageBubble( // Utilisation de MessageBubble maintenant
+                return MessageBubble(
                   text: text,
                   isFromUser: content.role == 'user',
                 );
               },
-              itemCount: historyToDisplay.length, // Utiliser la longueur de notre liste
-              // --- FIN DE LA CORRECTION ---
+              itemCount: historyToDisplay.length,
             ),
           ),
-          // Zone de saisie
           _buildInputArea(context),
         ],
       ),
@@ -96,73 +93,88 @@ class _ChatWidgetState extends State<ChatWidget> {
 
   Widget _buildInputArea(BuildContext context) {
     final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
-      color: theme.scaffoldBackgroundColor, // Utiliser l'arrière-plan du scaffold pour la cohérence
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: _textController,
-              focusNode: _textFieldFocus,
-              autofocus: true,
-              textCapitalization: TextCapitalization.sentences, // Mettre en majuscule la première lettre des phrases
-              decoration: _buildTextFieldDecoration(context, 'Tapez votre message ici...'), // Appel corrigé
-              onSubmitted: (String value) {
-                _sendChatMessage(value);
-              },
-              maxLines: 5, // Autoriser plusieurs lignes
-              minLines: 1,
-              keyboardType: TextInputType.multiline,
-              style: GoogleFonts.poppins(fontSize: 16), // Style de police pour le texte de saisie
+    return SafeArea(
+      top: false,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+        color: theme.brightness == Brightness.dark ? Colors.grey[850] : Colors.white,
+        child: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: _textController,
+                focusNode: _textFieldFocus,
+                autofocus: true,
+                textCapitalization: TextCapitalization.sentences,
+                decoration: _buildTextFieldDecoration(context, 'Tapez votre message ici...'),
+                onSubmitted: (String value) {
+                  _sendChatMessage(value);
+                },
+                maxLines: 5,
+                minLines: 1,
+                keyboardType: TextInputType.multiline,
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  color: theme.brightness == Brightness.dark ? Colors.white : Colors.black87,
+                ),
+              ),
             ),
-          ),
-          const SizedBox(width: 10),
-          _loading
-              ? Padding(
-            padding: const EdgeInsets.all(8.0), // Rembourrage pour l'indicateur de chargement
-            child: CircularProgressIndicator(
-              color: theme.primaryColor, // Utiliser la couleur principale pour l'indicateur
+            const SizedBox(width: 10),
+            _loading
+                ? Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CircularProgressIndicator(
+                color: theme.primaryColor,
+              ),
+            )
+                : Container(
+              decoration: BoxDecoration(
+                color: theme.primaryColor,
+                borderRadius: BorderRadius.circular(30.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: theme.primaryColor.withOpacity(0.4),
+                    blurRadius: 10,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: IconButton(
+                onPressed: () {
+                  _sendChatMessage(_textController.text);
+                },
+                icon: const Icon(Icons.send_rounded, color: Colors.white),
+                tooltip: 'Envoyer le message',
+              ),
             ),
-          )
-              : Container( // Envelopper IconButton dans un Container pour un bouton stylisé
-            decoration: BoxDecoration(
-              color: theme.primaryColor,
-              borderRadius: BorderRadius.circular(30.0), // Bouton entièrement arrondi
-            ),
-            child: IconButton(
-              onPressed: () {
-                _sendChatMessage(_textController.text);
-              },
-              icon: const Icon(Icons.send_rounded, color: Colors.white), // Icône d'envoi arrondie
-              tooltip: 'Envoyer le message',
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   InputDecoration _buildTextFieldDecoration(BuildContext context, String hintText) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return InputDecoration(
       hintText: hintText,
-      hintStyle: GoogleFonts.poppins(color: Colors.grey[500], fontSize: 16),
+      hintStyle: GoogleFonts.poppins(color: isDark ? Colors.grey[500] : Colors.grey[700], fontSize: 16),
       filled: true,
-      fillColor: Colors.grey[200], // Arrière-plan gris clair pour le champ de texte
+      fillColor: isDark ? Colors.grey[700] : Colors.grey[100],
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(25.0), // Coins arrondis pour le champ de saisie
-        borderSide: BorderSide.none, // Pas de ligne de bordure
+        borderRadius: BorderRadius.circular(25.0),
+        borderSide: BorderSide.none,
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(25.0),
-        borderSide: BorderSide(color: theme.primaryColor, width: 2.0), // Bordure de couleur principale lorsqu'il est en focus
+        borderSide: BorderSide(color: theme.primaryColor, width: 2.0),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(25.0),
         borderSide: BorderSide.none,
       ),
-      contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0), // Ajuster le rembourrage à l'intérieur du champ de texte
+      contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0),
     );
   }
 
@@ -175,6 +187,7 @@ class _ChatWidgetState extends State<ChatWidget> {
       _messages.add(userMessage);
     });
     _textController.clear();
+    _textFieldFocus.unfocus(); // Ferme le clavier
     _scrollDown();
 
     try {
@@ -200,7 +213,6 @@ class _ChatWidgetState extends State<ChatWidget> {
         _loading = false;
       });
       _scrollDown();
-      _textFieldFocus.requestFocus();
     }
   }
 
@@ -227,9 +239,6 @@ class _ChatWidgetState extends State<ChatWidget> {
   }
 }
 
-// --- Nouveau MessageBubble (anciennement MessageWidget) ---
-// Cette classe devrait être définie dans le même fichier ou dans 'package:ai_test/others/screenswidget.dart'
-// et son code doit être mis à jour pour correspondre à cette version améliorée.
 class MessageBubble extends StatelessWidget {
   const MessageBubble({
     required this.text,
@@ -243,42 +252,46 @@ class MessageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    // Définir les couleurs pour les messages utilisateur et IA
-    final Color messageColor = isFromUser ? theme.primaryColor : Colors.grey[300]!;
-    final Color textColor = isFromUser ? Colors.white : Colors.black87;
+    final isDark = theme.brightness == Brightness.dark;
 
-    // Définir l'alignement pour les messages utilisateur et IA
+    final bubbleColor = isFromUser
+        ? theme.primaryColor
+        : isDark ? Colors.grey[700] : Colors.grey[200]!;
+
+    final textColor = isFromUser
+        ? Colors.white
+        : isDark ? Colors.white : Colors.black87;
+
     final CrossAxisAlignment alignment =
     isFromUser ? CrossAxisAlignment.end : CrossAxisAlignment.start;
 
-    // Définir les bords arrondis pour les bulles de chat
     final BorderRadius borderRadius = BorderRadius.only(
-      topLeft: const Radius.circular(15.0),
-      topRight: const Radius.circular(15.0),
-      bottomLeft: isFromUser ? const Radius.circular(15.0) : const Radius.circular(0.0),
-      bottomRight: isFromUser ? const Radius.circular(0.0) : const Radius.circular(15.0),
+      topLeft: const Radius.circular(20.0),
+      topRight: const Radius.circular(20.0),
+      bottomLeft: isFromUser ? const Radius.circular(20.0) : const Radius.circular(5.0),
+      bottomRight: isFromUser ? const Radius.circular(5.0) : const Radius.circular(20.0),
     );
 
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 6.0), // Espacement entre les messages
+      margin: const EdgeInsets.symmetric(vertical: 6.0),
       child: Column(
         crossAxisAlignment: alignment,
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 12.0),
             decoration: BoxDecoration(
-              color: messageColor,
+              color: bubbleColor,
               borderRadius: borderRadius,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 3,
-                  offset: const Offset(0, 2),
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
                 ),
               ],
             ),
             constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width * 0.75, // Largeur max pour les bulles
+              maxWidth: MediaQuery.of(context).size.width * 0.75,
             ),
             child: Text(
               text,
