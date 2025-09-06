@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import '../data/users.dart';
+import '../others/app_theme.dart';
 import 'login.dart';
 
 class Profile extends StatefulWidget {
@@ -76,7 +78,7 @@ class _ProfileState extends State<Profile> {
             const SizedBox(height: 24),
 
             // Section Paramètres
-            _buildSettingsSection(),
+            _buildSettingsSection(context),
             const SizedBox(height: 24),
 
             // Section Actions
@@ -262,7 +264,9 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget _buildSettingsSection() {
+  Widget _buildSettingsSection(BuildContext context) {
+    final themeProvider = Provider.of<ThemeNotifier>(context);
+
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -297,12 +301,9 @@ class _ProfileState extends State<Profile> {
               "Mode sombre",
               CupertinoIcons.moon_fill,
               Switch(
-                value: currentUser!.darkModeEnabled,
+                value: themeProvider.themeMode == ThemeMode.dark,
                 onChanged: (value) {
-                  UserManager.updateDarkModeSettings(value);
-                  setState(() {
-                    currentUser = UserManager.currentUser;
-                  });
+                  themeProvider.toggleThemeMode();
                 },
               ),
             ),
