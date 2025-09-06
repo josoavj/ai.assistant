@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../data/users.dart';
+import 'login.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -535,8 +536,7 @@ class _ProfileState extends State<Profile> {
               onPressed: () {
                 Navigator.of(context).pop();
                 UserManager.logout();
-                // Remplacez par votre page de connexion
-                // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginPage()));
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginPage()));
               },
             ),
           ],
