@@ -1,11 +1,13 @@
 import 'package:ai_test/api/api_call.dart';
-import 'package:ai_test/main.dart';
+import 'package:ai_test/others/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import '../others/app_theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'chatwidget.dart';
+import '../others/screenswidget.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -16,6 +18,29 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   String? apiKey;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadApiKey();
+  }
+
+  // Chargement de la clé API depuis SharedPreferences
+  Future<void> _loadApiKey() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      apiKey = prefs.getString('gemini_api_key');
+    });
+  }
+
+  // Fonction pour gérer la soumission de la clé API
+  Future<void> _handleApiKeySubmitted(String key) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('gemini_api_key', key);
+    setState(() {
+      apiKey = key;
+    });
+  }
 
   // Fonction pour afficher la boîte de dialogue de confirmation de sortie
   void _showExitConfirmationDialog() {
@@ -93,9 +118,7 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
           body: switch (apiKey) {
             final providedKey? => ChatWidget(apiKey: providedKey),
-            _ => ApiKeyWidget(onSubmitted: (key) {
-              setState(() => apiKey = key);
-            }),
+            _ => ApiKeyWidget(onSubmitted: _handleApiKeySubmitted),
           },
         );
       },
@@ -211,7 +234,3 @@ class _AppDrawer extends StatelessWidget {
     );
   }
 }
-
-// Assurez-vous d'avoir ces widgets dans votre projet
-// class ChatWidget extends StatelessWidget { ... }
-// class ApiKeyWidget extends StatelessWidget { ... }
