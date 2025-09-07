@@ -20,6 +20,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   bool _isObscure = true;
   bool _isLoading = false;
   bool _rememberMe = false;
+  bool _showTestAccounts = false; // Nouvelle variable d'état
 
   late AnimationController _animationController;
   late Animation<double> _fadeInAnimation;
@@ -88,9 +89,9 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                     const SizedBox(height: 24),
                     _buildRememberMe(colorScheme, textTheme),
                     const SizedBox(height: 32),
-                    _buildDivider(colorScheme, textTheme),
+                    _buildTestAccountsToggle(colorScheme, textTheme),
                     const SizedBox(height: 24),
-                    _buildTestCredentials(colorScheme, textTheme),
+                    if (_showTestAccounts) _buildTestCredentials(colorScheme, textTheme),
                     const Spacer(),
                     _buildFooter(colorScheme, textTheme),
                   ],
@@ -276,22 +277,44 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildDivider(ColorScheme colorScheme, TextTheme textTheme) {
-    return Row(
-      children: [
-        Expanded(child: Divider(color: colorScheme.onSurface.withOpacity(0.3))),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            "Comptes de test",
-            style: GoogleFonts.poppins(
-              fontSize: 14,
-              color: textTheme.bodySmall?.color,
+  // Nouveau widget pour le bouton de basculement
+  Widget _buildTestAccountsToggle(ColorScheme colorScheme, TextTheme textTheme) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          _showTestAccounts = !_showTestAccounts;
+        });
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Row(
+          children: [
+            Expanded(child: Divider(color: colorScheme.onSurface.withOpacity(0.3))),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                children: [
+                  Text(
+                    "Comptes de test",
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: colorScheme.primary,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Icon(
+                    _showTestAccounts ? CupertinoIcons.chevron_up : CupertinoIcons.chevron_down,
+                    size: 14,
+                    color: colorScheme.primary,
+                  ),
+                ],
+              ),
             ),
-          ),
+            Expanded(child: Divider(color: colorScheme.onSurface.withOpacity(0.3))),
+          ],
         ),
-        Expanded(child: Divider(color: colorScheme.onSurface.withOpacity(0.3))),
-      ],
+      ),
     );
   }
 

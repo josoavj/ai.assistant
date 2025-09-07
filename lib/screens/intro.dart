@@ -1,6 +1,7 @@
-import 'package:ai_test/pages/login.dart'; // Assurez-vous que ce chemin est correct
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../pages/login.dart';
 
 class Intro extends StatefulWidget {
   const Intro({super.key});
@@ -18,7 +19,6 @@ class _IntroState extends State<Intro> with SingleTickerProviderStateMixin {
   final Duration _animationDuration = const Duration(milliseconds: 1500);
   // Délai avant de naviguer (devrait être >= _animationDuration si vous voulez voir toute l'animation)
   final Duration _navigationDelay = const Duration(milliseconds: 2000);
-
 
   @override
   void initState() {
@@ -51,7 +51,7 @@ class _IntroState extends State<Intro> with SingleTickerProviderStateMixin {
 
   void _scheduleNavigation() {
     Future.delayed(_navigationDelay, () {
-      if (mounted) { // Vérifie toujours si le widget est monté avant de naviguer
+      if (mounted) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const LoginPage()),
