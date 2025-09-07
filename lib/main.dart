@@ -1,4 +1,6 @@
+import 'package:ai_test/pages/login.dart';
 import 'package:ai_test/pages/settings.dart';
+import 'package:ai_test/screens/intro.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ai_test/screens/chatscreen.dart';
@@ -21,6 +23,7 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
+  @override
   Widget build(BuildContext context) {
     // Le Consumer écoute les changements dans ThemeNotifier
     // et reconstruit l'application si le thème change.
@@ -29,18 +32,18 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: 'MyAI Assistant',
           debugShowCheckedModeBanner: false,
-          // Utilisation des thèmes définis dans la classe AppThemes
           theme: AppThemes.lightTheme(themeNotifier.primarySwatch),
           darkTheme: AppThemes.darkTheme(themeNotifier.primarySwatch),
-          // Le mode de thème est contrôlé par le ThemeNotifier
           themeMode: themeNotifier.themeMode,
           routes: {
             '/': (context) => const ChatScreen(),
+            '/login': (context) => const LoginPage(),
             '/settings': (context) => const Settings(),
             '/about': (context) => const About(),
             '/profile': (context) => const Profile(),
+            '/intro': (context) => const Intro(),
           },
-          initialRoute: '/',
+          initialRoute: '/intro',
         );
       },
     );
