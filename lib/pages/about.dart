@@ -25,10 +25,10 @@ class _AboutState extends State<About> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: colorScheme.background,
+      backgroundColor: Colors.grey[50], // Fond gris très clair
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: colorScheme.onBackground),
+          icon: Icon(CupertinoIcons.back, color: Colors.black87), // Icône sombre
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -36,10 +36,10 @@ class _AboutState extends State<About> {
           style: GoogleFonts.poppins(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: colorScheme.onBackground,
+            color: Colors.black87, // Titre sombre
           ),
         ),
-        backgroundColor: colorScheme.background,
+        backgroundColor: Colors.grey[50], // Fond d'AppBar gris très clair
         elevation: 0,
         centerTitle: true,
       ),
@@ -100,7 +100,7 @@ class _AboutState extends State<About> {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: colorScheme.surface,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -118,7 +118,7 @@ class _AboutState extends State<About> {
             style: GoogleFonts.poppins(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: colorScheme.onSurface,
+              color: Colors.black87, // Texte sombre pour le contraste
             ),
           ),
           if (description != null) ...[
@@ -127,7 +127,7 @@ class _AboutState extends State<About> {
               description,
               style: GoogleFonts.poppins(
                 fontSize: 14,
-                color: colorScheme.onSurface.withOpacity(0.7),
+                color: Colors.black54, // Texte légèrement plus clair
               ),
             ),
           ],
@@ -153,12 +153,12 @@ class _AboutState extends State<About> {
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: colorScheme.secondaryContainer.withOpacity(0.3),
+          color: Colors.grey[200], // Fond gris clair pour l'icône
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
           children: [
-            Icon(icon, color: colorScheme.onSecondaryContainer, size: 20),
+            Icon(icon, color: Colors.black87, size: 20),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -169,7 +169,7 @@ class _AboutState extends State<About> {
                     style: GoogleFonts.poppins(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
-                      color: colorScheme.onSecondaryContainer,
+                      color: Colors.black54,
                     ),
                   ),
                   Text(
@@ -177,13 +177,13 @@ class _AboutState extends State<About> {
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: colorScheme.onSecondaryContainer,
+                      color: Colors.black87,
                     ),
                   ),
                 ],
               ),
             ),
-            Icon(CupertinoIcons.chevron_forward, color: colorScheme.onSecondaryContainer, size: 16),
+            Icon(CupertinoIcons.chevron_forward, color: Colors.black87, size: 16),
           ],
         ),
       ),
@@ -218,17 +218,17 @@ class _AboutState extends State<About> {
                 const SizedBox(height: 15),
                 Text(
                   "Ceci est une application de ChatBot IA simple développée par Josoa Vonjiniaina.",
-                  style: GoogleFonts.poppins(fontSize: 12),
+                  style: GoogleFonts.poppins(fontSize: 12, color: Colors.black87),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   "Cette application est open source et peut être trouvée sur GitHub.",
-                  style: GoogleFonts.poppins(fontSize: 12),
+                  style: GoogleFonts.poppins(fontSize: 12, color: Colors.black87),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   "Elle est développée avec Flutter et Dart.",
-                  style: GoogleFonts.poppins(fontSize: 12),
+                  style: GoogleFonts.poppins(fontSize: 12, color: Colors.black87),
                 ),
               ],
             );
