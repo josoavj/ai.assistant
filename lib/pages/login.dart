@@ -89,9 +89,9 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                     const SizedBox(height: 24),
                     _buildRememberMe(colorScheme, textTheme),
                     const SizedBox(height: 32),
-                    _buildTestAccountsToggle(colorScheme, textTheme), // Nouvelle méthode pour le bouton
+                    _buildTestAccountsToggle(colorScheme, textTheme),
                     const SizedBox(height: 24),
-                    if (_showTestAccounts) _buildTestCredentials(colorScheme, textTheme), // Affichage conditionnel
+                    if (_showTestAccounts) _buildTestCredentials(colorScheme, textTheme), 
                     const Spacer(),
                     _buildFooter(colorScheme, textTheme),
                   ],
