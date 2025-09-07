@@ -19,6 +19,22 @@ class ThemeNotifier with ChangeNotifier {
     _loadThemeSettings();
   }
 
+  double _fontSize = 1.0;
+  bool _hapticFeedbackEnabled = true;
+
+  double get fontSize => _fontSize;
+  bool get hapticFeedbackEnabled => _hapticFeedbackEnabled;
+
+  void setFontSize(double newSize) {
+    _fontSize = newSize;
+    notifyListeners();
+  }
+
+  void toggleHapticFeedback(bool enabled) {
+    _hapticFeedbackEnabled = enabled;
+    notifyListeners();
+  }
+
   Future<void> _loadThemeSettings() async {
     final prefs = await SharedPreferences.getInstance();
     final colorValue = prefs.getInt(_primaryColorValueKey);
