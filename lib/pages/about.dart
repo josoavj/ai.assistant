@@ -22,177 +22,239 @@ class _AboutState extends State<About> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea( // Ajout de SafeArea
-      child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(CupertinoIcons.back),
-            onPressed: () => Navigator.pop(context),
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Scaffold(
+      backgroundColor: Colors.grey[50], // Fond gris très clair
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(CupertinoIcons.back, color: Colors.black87), // Icône sombre
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          "Informations",
+          style: GoogleFonts.poppins(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87, // Titre sombre
           ),
-          title: Text(
-            "Informations",
+        ),
+        backgroundColor: Colors.grey[50], // Fond d'AppBar gris très clair
+        elevation: 0,
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Section principale "À propos"
+            _buildInfoCard(
+              title: "AI ChatBot Application",
+              description: "Ceci est une application de ChatBot IA simple développée avec Flutter et Dart. Son objectif est de fournir une interface de conversation fluide et élégante avec une IA.",
+              colorScheme: colorScheme,
+              child: const SizedBox(height: 0),
+            ),
+            const SizedBox(height: 24),
+
+            // Section du développeur et du dépôt
+            _buildInfoCard(
+              title: "Développeur & Dépôt",
+              colorScheme: colorScheme,
+              child: Column(
+                children: [
+                  _buildLinkTile(
+                    icon: CupertinoIcons.person_fill,
+                    label: "Développé par",
+                    text: "josoavj",
+                    url: "https://github.com/josoavj",
+                    colorScheme: colorScheme,
+                  ),
+                  const SizedBox(height: 12),
+                  _buildLinkTile(
+                    icon: CupertinoIcons.link,
+                    label: "Dépôt GitHub",
+                    text: "AI CHAT (TEST)",
+                    url: "https://github.com/josoavj/aichat",
+                    colorScheme: colorScheme,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Bouton pour les informations avancées
+            _buildAdvancedInfoButton(context, colorScheme),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoCard({
+    required String title,
+    required ColorScheme colorScheme,
+    String? description,
+    required Widget child,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: colorScheme.shadow.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
             style: GoogleFonts.poppins(
-              fontSize: 20, // Taille un peu plus grande
-              fontWeight: FontWeight.bold, // Plus audacieux
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87, // Texte sombre pour le contraste
             ),
           ),
-          centerTitle: true,
-          elevation: 0, // Pas d'ombre sous l'AppBar si vous voulez un look plus plat
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(20.0), // Padding général autour du contenu
-          child: Center(
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15.0), // Bords arrondis
+          if (description != null) ...[
+            const SizedBox(height: 12),
+            Text(
+              description,
+              style: GoogleFonts.poppins(
+                fontSize: 14,
+                color: Colors.black54, // Texte légèrement plus clair
               ),
-              // Utilisation d'un dégradé pour la couleur de la carte
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15.0),
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color.fromARGB(255, 12, 100, 175), // Bleu un peu plus clair
-                      Color.fromARGB(255, 7, 60, 100), // Bleu plus foncé
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+            ),
+          ],
+          if (child != const SizedBox(height: 0)) ...[
+            const SizedBox(height: 20),
+            child,
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLinkTile({
+    required IconData icon,
+    required String label,
+    required String text,
+    required String url,
+    required ColorScheme colorScheme,
+  }) {
+    return InkWell(
+      onTap: () => _launchUrl(url),
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.grey[200], // Fond gris clair pour l'icône
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: Colors.black87, size: 20),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: GoogleFonts.poppins(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black54,
+                    ),
                   ),
+                  Text(
+                    text,
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(CupertinoIcons.chevron_forward, color: Colors.black87, size: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAdvancedInfoButton(BuildContext context, ColorScheme colorScheme) {
+    return Container(
+      decoration: BoxDecoration(
+        color: colorScheme.primary,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: colorScheme.primary.withOpacity(0.2),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(16),
+        child: InkWell(
+          onTap: () {
+            showAboutDialog(
+              context: context,
+              applicationLegalese: "© 2024 Josoa Vonjiniaina",
+              applicationName: "AI ChatBot",
+              applicationVersion: "1.0.0",
+              applicationIcon: const FlutterLogo(size: 30),
+              children: [
+                const SizedBox(height: 15),
+                Text(
+                  "Ceci est une application de ChatBot IA simple développée par Josoa Vonjiniaina.",
+                  style: GoogleFonts.poppins(fontSize: 12, color: Colors.black87),
                 ),
-                padding: const EdgeInsets.all(30),
-                width: 300, // Largeur fixe un peu plus grande
-                constraints: const BoxConstraints(minHeight: 250), // Hauteur minimale
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                const SizedBox(height: 8),
+                Text(
+                  "Cette application est open source et peut être trouvée sur GitHub.",
+                  style: GoogleFonts.poppins(fontSize: 12, color: Colors.black87),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  "Elle est développée avec Flutter et Dart.",
+                  style: GoogleFonts.poppins(fontSize: 12, color: Colors.black87),
+                ),
+              ],
+            );
+          },
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
                   children: [
+                    Icon(Icons.info_outline, color: colorScheme.onPrimary, size: 20),
+                    const SizedBox(width: 12),
                     Text(
-                      "AI ChatBot Application",
-                      textAlign: TextAlign.center,
+                      "Informations Avancées",
                       style: GoogleFonts.poppins(
-                        fontSize: 24, // Taille plus grande pour le titre
-                        color: Colors.white,
-                        fontWeight: FontWeight.w900,
+                        fontSize: 16,
+                        color: colorScheme.onPrimary,
+                        fontWeight: FontWeight.w600,
                       ),
-                    ),
-                    const SizedBox(height: 25), // Espacement ajusté
-                    // About the developer
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 5.0),
-                      child: RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                          children: [
-                            WidgetSpan(
-                              child: Icon(Icons.person, color: Colors.white.withOpacity(0.8), size: 18),
-                              alignment: PlaceholderAlignment.middle,
-                            ),
-                            const TextSpan(text: ' '), // Pour l'espace entre l'icône et le texte
-                            TextSpan(
-                              text: "Développé par: ",
-                              style: GoogleFonts.poppins(
-                                fontSize: 16,
-                                color: Colors.white.withOpacity(0.9),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            TextSpan(
-                              text: "josoavj",
-                              style: GoogleFonts.poppins(
-                                fontSize: 16,
-                                color: Colors.blueAccent[100], // Couleur pour le lien
-                                fontWeight: FontWeight.w700,
-                                decoration: TextDecoration.underline, // Souligner le lien
-                              ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () => _launchUrl('https://github.com/josoavj'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    // The repository
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 5.0),
-                      child: RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                          children: [
-                            WidgetSpan(
-                              child: Icon(Icons.code, color: Colors.white.withOpacity(0.8), size: 18),
-                              alignment: PlaceholderAlignment.middle,
-                            ),
-                            const TextSpan(text: ' '),
-                            TextSpan(
-                              text: "Dépôt GitHub: ",
-                              style: GoogleFonts.poppins(
-                                fontSize: 16,
-                                color: Colors.white.withOpacity(0.9),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            TextSpan(
-                              text: "AI Test",
-                              style: GoogleFonts.poppins(
-                                fontSize: 16,
-                                color: Colors.blueAccent[100],
-                                fontWeight: FontWeight.w700,
-                                decoration: TextDecoration.underline,
-                              ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () => _launchUrl('https://github.com/josoavj/ai.assistant'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 30), // Espacement avant le bouton d'infos
-                    ListTile(
-                      leading: const Icon(Icons.info_outline, color: Colors.white),
-                      title: Text(
-                        "Informations Avancées",
-                        style: GoogleFonts.poppins(
-                          fontSize: 16,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      trailing: const Icon(CupertinoIcons.right_chevron, color: Colors.white),
-                      onTap: () {
-                        showAboutDialog(
-                          context: context,
-                          applicationLegalese: "© 2024 Josoa Vonjiniaina",
-                          applicationName: "AI ChatBot",
-                          applicationVersion: "1.0.0",
-                          applicationIcon: const FlutterLogo(size: 30),
-                          children: [
-                            const SizedBox(height: 15),
-                            Text(
-                              "Ceci est une application de ChatBot IA simple développée par Josoa Vonjiniaina.",
-                              style: GoogleFonts.poppins(fontSize: 12),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              "Cette application est open source et peut être trouvée sur GitHub.",
-                              style: GoogleFonts.poppins(fontSize: 12),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              "Elle est développée avec Flutter et Dart.",
-                              style: GoogleFonts.poppins(fontSize: 12),
-                            ),
-                          ],
-                        );
-                      },
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        side: BorderSide(color: Colors.white.withOpacity(0.3), width: 1), // Bordure légère
-                      ),
-                      tileColor: Colors.white.withOpacity(0.1), // Couleur de fond du ListTile
                     ),
                   ],
                 ),
-              ),
+                Icon(CupertinoIcons.right_chevron, color: colorScheme.onPrimary, size: 16),
+              ],
             ),
           ),
         ),

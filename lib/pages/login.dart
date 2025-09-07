@@ -20,7 +20,6 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   bool _isObscure = true;
   bool _isLoading = false;
   bool _rememberMe = false;
-  bool _showTestAccounts = false; // Nouvelle variable d'état
 
   late AnimationController _animationController;
   late Animation<double> _fadeInAnimation;
@@ -90,8 +89,6 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                     _buildRememberMe(colorScheme, textTheme),
                     const SizedBox(height: 32),
                     _buildTestAccountsToggle(colorScheme, textTheme),
-                    const SizedBox(height: 24),
-                    if (_showTestAccounts) _buildTestCredentials(colorScheme, textTheme),
                     const Spacer(),
                     _buildFooter(colorScheme, textTheme),
                   ],
@@ -277,13 +274,11 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     );
   }
 
-  // Nouveau widget pour le bouton de basculement
+  // Nouveau widget pour le bouton de basculement qui affiche le dialogue
   Widget _buildTestAccountsToggle(ColorScheme colorScheme, TextTheme textTheme) {
     return InkWell(
       onTap: () {
-        setState(() {
-          _showTestAccounts = !_showTestAccounts;
-        });
+        _showTestAccountsDialog();
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -304,7 +299,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                   ),
                   const SizedBox(width: 8),
                   Icon(
-                    _showTestAccounts ? CupertinoIcons.chevron_up : CupertinoIcons.chevron_down,
+                    CupertinoIcons.arrow_right,
                     size: 14,
                     color: colorScheme.primary,
                   ),
@@ -318,49 +313,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildTestCredentials(ColorScheme colorScheme, TextTheme textTheme) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: colorScheme.secondaryContainer.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: colorScheme.secondaryContainer),
-      ),
-      child: Column(
-        children: [
-          Text(
-            "Comptes de démonstration",
-            style: GoogleFonts.poppins(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: colorScheme.onSecondaryContainer,
-            ),
-          ),
-          const SizedBox(height: 16),
-          _buildTestUserCard(
-            username: "sudoted",
-            fullName: "Sudo Ted",
-            description: "Développeur · Antananarivo",
-            isOnline: true,
-            onTap: () => _fillCredentials("sudoted", "password123"),
-            colorScheme: colorScheme,
-            textTheme: textTheme,
-          ),
-          const SizedBox(height: 12),
-          _buildTestUserCard(
-            username: "marie_dev",
-            fullName: "Marie Rakoto",
-            description: "Designer · Fianarantsoa",
-            isOnline: false,
-            onTap: () => _fillCredentials("marie_dev", "password456"),
-            colorScheme: colorScheme,
-            textTheme: textTheme,
-          ),
-        ],
-      ),
-    );
-  }
-
+  // Ce widget n'est plus utilisé directement dans le build()
   Widget _buildTestUserCard({
     required String username,
     required String fullName,
@@ -450,6 +403,67 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
           ],
         ),
       ),
+    );
+  }
+
+  void _showTestAccountsDialog() {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            "Comptes de test",
+            style: GoogleFonts.poppins(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: textTheme.bodyLarge?.color,
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildTestUserCard(
+                  username: "sudoted",
+                  fullName: "Sudo Ted",
+                  description: "Développeur · Antananarivo",
+                  isOnline: true,
+                  onTap: () {
+                    _fillCredentials("sudoted", "password123");
+                    Navigator.of(context).pop();
+                  },
+                  colorScheme: colorScheme,
+                  textTheme: textTheme,
+                ),
+                const SizedBox(height: 12),
+                _buildTestUserCard(
+                  username: "marie_dev",
+                  fullName: "Marie Rakoto",
+                  description: "Designer · Fianarantsoa",
+                  isOnline: false,
+                  onTap: () {
+                    _fillCredentials("marie_dev", "password456");
+                    Navigator.of(context).pop();
+                  },
+                  colorScheme: colorScheme,
+                  textTheme: textTheme,
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Fermer", style: GoogleFonts.poppins(color: colorScheme.primary)),
+            ),
+          ],
+        );
+      },
     );
   }
 
